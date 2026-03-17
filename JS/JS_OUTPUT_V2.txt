@@ -1,0 +1,1851 @@
+https://www.geeksforgeeks.org/javascript/javascript-output-based-interview-questions/
+
+Q1. let x = { b: 1, c: 2 };
+let y = Object.keys(x);
+console.log(y.length);
+
+Ans. 2
+
+Q2. let x = '{ "b": 1, "c": 2 }';
+let y = JSON.parse(x);
+console.log(typeof y);
+
+Ans. object
+
+Explanation: The code creates a string x that contains a JSON-encoded object with two properties "b" and "c", and assigns it to the variable x. The JSON.parse() method is then used to parse the JSON-encoded string x into a JavaScript object, which is assigned to the variable y.
+The console.log() statement then outputs the data type of y using the typeof operator. Since y is now an object, the output will be an object.
+
+Q3. let x = 0.1 + 0.2;
+let y = 0.3;
+console.log(x == y);
+
+Ans. false
+Why does this happen?
+Computers store decimals in binary, and some decimal numbers (like 0.1 and 0.2) cannot be represented exactly. Small rounding errors add up, so 0.1 + 0.2 is not exactly 0.3.
+
+1. Humans use base 10, computers use base 2
+We use base 10: digits 0–9, and each place is a power of 10.
+123.45 = 1×10² + 2×10¹ + 3×10⁰ + 4×10⁻¹ + 5×10⁻²
+Computers use base 2 (binary): only 0 and 1, each place is a power of 2.
+101.1₂ = 1×2² + 0×2¹ + 1×2⁰ + 1×2⁻¹ = 4 + 0 + 1 + 0.5 = 5.5
+
+2. Some decimals have no exact binary form
+In base 10, 1/3 = 0.333333… — it never ends.
+In base 2, 0.1 and 0.2 behave the same way: they never end.
+0.1 in binary:
+2⁻¹	2⁻²	2⁻³	2⁻⁴	2⁻⁵	2⁻⁶	...
+0.5	0.25	0.125	0.0625	0.03125	0.015625	...
+To get 0.1, you need combinations of these powers of 2. The result is an infinite repeating pattern:
+
+0.1₁₀ = 0.0001100110011001100110011...₂  (repeats forever)
+
+0.2 in binary is just 0.1 shifted one place:
+0.2₁₀ = 0.001100110011001100110011...₂  (repeats forever)
+So there is no finite binary representation for 0.1 or 0.2.
+
+3. Computers must round to fit
+A number like 0.1 is stored in a fixed number of bits (e.g. 64 bits in IEEE 754 double-precision). The infinite binary expansion must be cut off and rounded.
+Example:
+0.1 is stored as:
+0.1000000000000000055511151231257827021181583404541015625
+0.2 is stored as:
+0.200000000000000011102230246251565404236316680908203125
+These are the closest values the computer can represent in 64 bits.
+
+4. Adding them introduces more error
+When you add these rounded values:
+  ~0.10000000000000000555111512312578...+ ~0.20000000000000001110223024625156...─────────────────────────────────────────= ~0.30000000000000004440892098500626...
+So 0.1 + 0.2 in JavaScript is stored as something like 0.30000000000000004, not exactly 0.3.
+
+5. Why 0.3 looks “exact” but 0.1 + 0.2 doesn’t
+When you write 0.3, the computer stores the closest representable value to 0.3, which is slightly different from the result of adding the stored 0.1 and 0.2. So:
+0.3 → stored as one specific approximation
+0.1 + 0.2 → stored as another approximation (from two rounded values plus rounding of the sum)
+Those two approximations are not identical, so 0.1 + 0.2 === 0.3 is false.
+
+Step	What happens
+1	0.1 and 0.2 have infinite binary expansions
+2	The computer rounds them to fit in 64 bits
+3	Adding these rounded values introduces more rounding
+4	The sum is not exactly 0.3, so 0.1 + 0.2 === 0.3 is false
+This is a limitation of binary floating-point, not of JavaScript. Most programming languages that use IEEE 754 floating-point behave the same way.
+
+Any language that uses IEEE 754 float/double will show this behavior. It comes from how hardware represents decimals, not from the language itself
+
+Q4. console.log(1 > 2 > 3);
+
+Ans. false
+
+Explanation: This is because the comparison operators (>) in JavaScript are evaluated from left to right, and each comparison operator returns a Boolean value (true or false).
+
+So when we evaluate the expression 1 > 2 > 3, the following happens:
+
+The first comparison, 1 > 2, evaluates to false. The second comparison, false > 3, implicitly converts false to the number 0 and then compares it to 3. Since 0 is not greater than 3, the expression evaluates to false.
+
+Therefore, the value of x is false.
+
+Q5.let x = false;
+let y = "0";
+let z = 0;
+
+console.log(x == y);
+console.log(x == z);
+
+Ans. true
+Explanation: In JavaScript, when you use the == operator to compare values of different types, the operands will be converted to a common type before the comparison is made. This process is called type coercion.
+
+In the first comparison (x == y), x is a Boolean (false) and y is a string ("0"). Since both false and "0" can be coerced to the Boolean false, the comparison returns true.
+
+In the second comparison (x == z), x is a Boolean (false) and z is a number (0). Since both false and 0 can be coerced to the number 0, the comparison returns true.
+
+Q6. let x = [];
+console.log(Boolean(x));
+
+Ans. true
+Explanation: In JavaScript, an empty array [] is a truthy value when coerced to a Boolean. This means that when you use Boolean(x) to convert x to a Boolean value, it will return true.
+
+In general, any non-empty array (i.e., an array with one or more elements) is also truthy when coerced to a Boolean.
+
+Q7. let x = Infinity;
+console.log(typeof x);
+
+And. number
+
+Explanation: In JavaScript, Infinity is a special numeric value that represents positive infinity. It is a primitive value of the number data type. When you use the typeof operator to check the type of x, it will return "number" because Infinity is a number value, albeit a special one.
+
+Q8. let x = "5";
+let y = 2;
+
+console.log(x + y);
+console.log(x - y);
+
+Ans. 52, 3
+Explanation: In the first statement, x is a string ("5") and y is a number (2). When you use the + operator with a string and a number, JavaScript performs string concatenation: it converts the number to a string and then concatenates the two strings. So "5" and 2 are concatenated to produce the string "52".
+
+In the second statement, x is still a string ("5") and y is still a number (2). However, when you use the - operator with a string and a number, JavaScript attempts to convert the string to a number. In this case, "5" can be converted to the number 5, so the expression evaluates to 5 - 2, which is 3.
+
+Q9. let a = () => {
+  console.log(this);
+};
+
+a();
+
+Ans. Window
+The code will output the global object (Window in a browser, or global in Node.js).
+
+Arrow functions use the this from where they are defined.
+Your a() is defined in global scope, so it logs global this:
+Browser non-strict: Window
+Browser strict: undefined
+Node.js: {} (or similar)
+
+Q10. let x = "hello";
+let y = new String("hello");
+
+console.log(x == y);
+console.log(x === y);
+
+Ans. true, false
+
+Explanation: In JavaScript, the == operator performs type coercion, meaning it converts the operands to a common type before comparing them. In this case, x is a string primitive ("hello") and y is a string object (new String("hello")). When you use the == operator to compare them, JavaScript will convert y to a primitive value using the toString() method, so the comparison becomes "hello" == "hello", which is true.
+
+On the other hand, the === operator performs a strict comparison without any type coercion. In this case, x and y are of different types, so the comparison will always be false, even if their values are the same.
+
+Q11. let x = [];
+let y = [];
+let z = x + y;
+
+console.log(typeof z);
+
+Ans. string
+Explanation: In JavaScript, when you use the + operator with two arrays, or an array and any other object, both operands will be converted to strings before concatenation occurs. This is called implicit type coercion.
+
+In this case, x and y are both empty arrays, which means that z will be the empty string ("") because both arrays will be converted to empty strings before concatenation.
+
+Therefore, when you use the typeof operator to check the type of z, it will return "string" because z is a string.
+
+let a = [1, 3];
+let b = [2, 4];
+let c = a + b;
+console.log(c);
+
+Output: 1,32,4
+
+Explanation
+Using + with arrays does not concatenate them into a new array. JavaScript converts both sides to strings and concatenates those.
+Step by step
+a + b — both operands are coerced to strings.
+a → string: [1, 3] → "1,3" (elements joined by commas).
+b → string: [2, 4] → "2,4".
+String concatenation: "1,3" + "2,4" → "1,32,4".
+So c is the string "1,32,4", not an array.
+How to concatenate arrays
+Method	Result
+a.concat(b)	[1, 3, 2, 4]
+[...a, ...b]	[1, 3, 2, 4]
+a + b	"1,32,4" (string)
+TL;DR
++ with arrays triggers string conversion and concatenation, so you get "1,32,4" instead of [1, 3, 2, 4]. Use a.concat(b) or [...a, ...b] to merge arrays.
+
+Q12. let x = [1, 2, 3, 4, 5];
+let y = x.filter((n) => n >= 3);
+
+console.log(y);
+
+Ans. [3, 4, 5]
+
+Explanation: In this code, x is an array containing the values [1, 2, 3, 4, 5]. The filter() method is called on x with a callback function that takes a single argument n and returns a Boolean value indicating whether n should be included in the filtered array. In this case, the callback function returns true for values of n that are greater than or equal to 3.
+
+Therefore, y will be a new array containing the values [3, 4, 5], which are the elements of x that satisfy the filtering condition.
+
+When you log y to the console, it will output [3, 4, 5].
+
+Q13. let x = true;
+let y = false;
+let z = x + y && x * y;
+
+console.log(z);
+
+Ans. 0
+Explanation: In this code, x and y are both Boolean values. The + operator is used to add x and y. In JavaScript, true is converted to 1, and false is converted to 0 when used in a numeric context, so x + y will be 1 + 0, which is 1.
+
+The && operator is then used to perform a logical AND operation between x + y and x * y. Since x * y is 0 (because multiplying any number by false or 0 is 0), the logical AND operation will also result in 0. Therefore, z will be 0.
+
+When you log z to the console, it will output 0
+
+Q14. function foo(a, b) {
+  console.log(arguments[1]);
+}
+
+foo(3);
+
+Ans. undefined
+
+Explanation: In this code, the function foo() takes two arguments a and b. When the function is called on line 4 with only one argument 3, the value of a is set to 3 and the value of b is undefined because no second argument was passed.
+
+The arguments object is an array-like object that contains all the arguments that were passed to a function. In this case, arguments[0] would be 3, and arguments[1] would be undefined.
+
+Therefore, when arguments[1] are logged to the console, it will output undefined
+
+Q15. let x = "false";
+let y = !x;
+
+console.log(y);
+
+Ans. false
+
+Explanation: In this code, x is a string containing the value "false". When you use the logical NOT operator (!) with a non-Boolean value, JavaScript will first convert the value to a Boolean and then negate it. Since "false" is a non-empty string, it is considered a truthy value when converted to Boolean, so !x will be the same as !true, which is false.
+
+Therefore, when y is logged into the console, it will output false.
+
+Q16. let x = 1;
+let y = "1";
+
+console.log(++x, ++y);
+
+Ans. 2, 2
+
+Explanation: In this code, x is a number containing the value 1, and y is a string containing the value "1".
+
+The ++ operator is used to increment the value of x and y before they are logged into the console. Since x is a number, it can be incremented numerically, and ++x will increment the value of x to 2.
+
+In contrast, since y is a string, it will be first converted to a number before it is incremented. The string "1" can be converted to the number 1, so ++y will also increment the value of y to 2.
+
+Therefore, when ++x and ++y are logged to the console, it will output 2 2.
+
+Q17. var num = 8;
+var num = 10;
+
+console.log(num);
+
+Ans. 10
+
+Explanation: In this code, the var keyword is used to declare the variable num twice. When a variable is declared multiple times using var within the same scope, the later declaration will overwrite the earlier one. 
+
+Therefore, when num is logged to the console, it will output 10, which is the value of the variable after it was reassigned to 10.
+
+Q18. let x = "b";
+let y = "a";
+
+console.log(x + y + + y + y);
+
+Ans. baNaNa
+
+Explanation: In this code, x is a string containing the value "b", and y is a string containing the value "a". 
+
+The expression x + y concatenates the values of x and y into the string "ba".
+
+The expression +y coerces the value of y into a number. Since y is the string "a", which cannot be coerced into a number, the result of +y is NaN.
+
+Finally, the expression NaN + y concatenates the string "NaN" with the value of y, which is "a", resulting in the string "baNaNaa".
+
+Therefore, when x + y + +y + y is logged to the console, it will output "baNaNaa".
+
+Q19 console.log(x);
+
+var x;
+
+Ans. undefined
+
+Explanation: In this code, the variable x is declared using the var keyword after it is logged into the console. However, JavaScript moves all variable declarations to the top of their scope (this is called "hoisting"), so the declaration of x is effectively moved to the top of the code, before the console.log() statement.
+
+However, the assignment of a value to x happens after the console.log() statement, so when x is logged to the console, it has not yet been assigned a value. In JavaScript, uninitialized variables have a value of undefined, so undefined will be logged to the console.
+
+Therefore, when console.log(x) is executed, it will output undefined.
+
+Q20. let x = true + true;
+let y = x + false;
+
+console.log(y);
+
+Explanation: In this code, x is the result of the expression true + true. In JavaScript, the + operator can be used for both addition and concatenation. When used with boolean values, it performs addition, and true is coerced to the number 1. Therefore, true + true evaluates to 2.
+
+The variable y is assigned the result of the expression x + false. Since false is coerced to the number 0, this expression is equivalent to 2 + 0, which evaluates to 2.
+
+Therefore, when y is logged into the console, it will output 2.
+
+Q21. let x = [2];
+let y = 2;
+
+console.log(x == y);
+
+Ans. true
+
+Explanation: In this code, x is an array containing the single element 2, and y is the number 2.
+
+When an array is compared to a non-array value using the == operator, JavaScript first attempts to convert both values to a common type. In this case, the array x is coerced to a string, resulting in the string "2". The number y is also coerced to a string, resulting in the string "2".
+
+Since both operands are now strings with the same value, the == operator returns true.
+
+Therefore, when x == y is logged to the console, it will output true.
+
+Q22. let x = [1, 2, 3];
+
+console.log(typeof x);
+
+Ans. object
+
+Explanation: In JavaScript, arrays are a type of object. Therefore, the typeof operator will return "object" when applied to an array.
+
+Therefore, when typeof x is logged to the console, it will output "object".
+
+Q23. const a = { b: { c: 2 } };
+const b = { ...a };
+a.b.c = 3;
+
+console.log(b.b.c);
+
+Ans. 3
+
+Explanation:
+This happens because the spread operator { ...a } makes a shallow copy, not a deep copy.
+What happens
+a = { b: { c: 2 } }
+a.b points to the object { c: 2 }.
+b = { ...a }
+Top-level properties are copied.
+a.b is an object, so its reference is copied, not a clone.
+So b.b and a.b both refer to the same object.
+a.b.c = 3
+Mutates the shared object { c: 2 } to { c: 3 }.
+console.log(b.b.c)
+b.b still points to the same object, so b.b.c is now 3.
+Visual
+Before a.b.c = 3:   a ──► { b: ──► { c: 2 } }   b ──► { b: ──► same object }After a.b.c = 3:   a ──► { b: ──► { c: 3 } }  ◄── shared object   b ──► { b: ──► same object }
+Shallow vs deep copy
+Copy type	What gets copied	Result
+Shallow { ...a }	Top-level values only	Nested objects are shared
+Deep	All levels cloned	Nested objects are independent
+How to deep copy
+const b = JSON.parse(JSON.stringify(a));  // Simple (no functions, dates, etc.)// orconst b = structuredClone(a);  // Modern approach (no functions)
+With a deep copy, a.b.c = 3 would not change b.b.c, and b.b.c would still be 2.
+
+Q24. let x = [1, 2, 3];
+let [, , y] = x;
+
+console.log(y);
+
+Ans. 3
+Explanation: In this code, an array x is defined containing the elements 1, 2, and 3. Then, array destructuring is used to extract the third element of x into a variable y. The comma syntax is used to skip the first two elements of the array.
+
+Therefore, when y is logged into the console, it will output 3.
+
+Q25. let x = { a: 1, b: 2 };
+let y = { b: 3 };
+let z = { ...x, ...y };
+
+console.log(z);
+
+Ans. { a: 1, b: 3 }
+Explanation: In this code, two objects x and y are defined. x contains properties a and b, while y contains property b. Then, the spread operator ... is used to create a new object z that contains all of the properties from x and y.
+
+When there are conflicting property names, as in this case with the property b, the value from the later object (in this case, y) will overwrite the value from the earlier object (x).
+
+Therefore, when z is logged to the console, it will output { a: 1, b: 3 }.
+
+Q26. let x = [1, 2, 3];
+let y = x.map((num) => {
+  x.push(num + 3);
+  return num + 1;
+});
+
+console.log(y);
+
+Ans. [2, 3, 4]
+
+Explanation: In this code, an array x is initially defined with the elements [1, 2, 3]. The .map() function is then called on x, iterating over each element and applying the provided callback function. The callback function takes num (the current element), returns num + 1, and simultaneously pushes num + 3 to the array x. However, an important aspect of .map() is that it determines the number of iterations based on the array's initial length before modifications occur. Since x originally contains three elements, .map() will only execute for the first three elements (1, 2, 3), even though new elements (4, 5, 6) are being pushed to x during the iteration.
+
+This means that map() does not dynamically process the newly added elements, and it strictly iterates three times. As a result, the new array y is created by mapping [1, 2, 3] to [2, 3, 4], while x is mutated to [1, 2, 3, 4, 5, 6] by the end of the execution. This behavior occurs because .map() is not influenced by modifications made to the array after iteration begins. Thus, when console.log(y) is executed, the output is [2, 3, 4], while console.log(x) outputs [1, 2, 3, 4, 5, 6]
+
+Q27. let arr = [1, 2, 3];
+arr[10] = 4;
+
+console.log(arr.length);
+
+Ans. 11
+
+Explanation: In this code, an array arr is defined containing the elements 1, 2, and 3. The line arr[10] = 4 sets the value of the element at index 10 to 4. Since there are no elements in arr between indices 3 and 10, these indices are considered "empty slots" in the array. However, this does not affect the length of the array, which is determined by the highest index in the array plus one.
+
+In this case, the highest index in the array is 10, so the length of the array is 11 (since the array contains elements at indices 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, and 10). Therefore, when arr.length is logged to the console, it will output 11.
+
+Q28. let x = { a: 1 };
+let y = Object.assign({}, x);
+
+console.log(x === y);
+
+Ans. false
+
+Explanation: In this code, an object x is defined with a property set to 1. The Object.assign() method is then used to create a new object y with the same properties as x. Since Object.assign() creates a new object and does not modify the original object, x, and y are two distinct objects with the same properties.
+
+When x === y is evaluated, it checks whether x and y are the same objects in memory. Since x and y are two separate objects, each with their own memory address, x === y will evaluate to false.
+
+Q29. let x = [1, 2, 3, 5];
+
+x.forEach((e) => {
+  if (e > 2 && e < 5) return;
+  console.log(e);
+});
+
+Ans. 1, 2, 5
+
+Explanation: In this code, an array x is defined with four elements. The forEach() method is then used to iterate over each element in x.
+
+For each element, the code checks if it is greater than 2 and less than 5. If so, it uses the return statement to exit the current iteration and move on to the next element. If not, it prints the element using console.log().
+
+So, the first three elements (1, 2, and 3) are printed, but the fourth element (5) is also printed because it does not satisfy the condition in the if statement.
+
+Q30. let x = 10;
+let y = 20;
+
+console.log("total = " + x + y);
+
+Ans. total = 1020
+Explanation: This is because the + operator is used for both addition and string concatenation in JavaScript, and it has left-to-right associativity. In this case, the first operand is the string "total = ", so the second operand x is coerced to a string and concatenated to it. Then, the third operand y is also coerced to a string and concatenated to the resulting string.
+
+Q31. let x = 5;
+let y = 6;
+x += x > y ? x : y;
+
+console.log(x);
+
+Ans. 11
+
+Explanation: x is initialized to 5 and y is initialized to 6.
+The expression x > y is evaluated. Since x is not greater than y, this expression evaluates to false.
+The ternary operator (?:) evaluates its second operand, y, since the condition is false.
+The result of the ternary operator is then added to x using the += operator. So x is incremented by y, which is currently 6.
+The value of x is now 11.
+Finally, x is logged to the console, which outputs 11
+
+Q32. const arr = [1, 2, 3];
+arr.forEach((num) => num * 2);
+
+console.log(arr);
+
+Ans. [1, 2, 3]
+
+Explanation: The forEach method is called on arr, which iterates over each element in the array and applies the function (num) => num * 2 to each element. This function doubles the value of each element but does not modify the original array, since it does not mutate the array in place. The console.log method is called with arr as its argument, which outputs the contents of the array to the console.
+
+Since the original array was not mutated, the output is [1, 2, 3].
+
+Q33. let a = [1, 2, 3];
+a.push(a[2]++);
+
+console.log(a);
+
+Ans. [ 1, 2, 4, 3 ]
+
+Explanation: a is initialized as an array with values [1, 2, 3]. The push method is called on a, with the argument a[2]++. This accesses the third element of a, which is 3, and then increments it by 1 using the ++ operator. The resulting value, 4, is then pushed to the end of the 'a' array.
+
+The console.log method is called with 'a' as its argument, which outputs the contents of the array to the console.
+The 'a' array now contains the values [1, 2, 4, 3]
+
+Q34. let x;
+
+console.log(x);
+
+Ans. undefined
+
+Explanation: x is declared but not initialized, which means it does not have a value assigned to it. The console.log method is called with x as its argument, which outputs the value of x to the console. Since x has not been assigned a value, its value is undefined, which is what gets outputted to the console.
+
+Q35. let x = {
+  y: "z",
+  print: () => {
+    return this.y === "z";
+  },
+};
+
+console.log(x.print());
+
+Ans. false
+
+Explanation: x is initialized as an object with a property y that has a value of "z", and a method print that uses an arrow function to return this.y === "z". The console.log method is called with the result of x.print() as its argument.
+
+The print method uses an arrow function, which means that this refers to the global object, not the x object that print is a property of. Therefore, this.y is undefined, and the expression this.y === "z" evaluates to false.
+The result of x.print() is false, which gets outputted to the console.
+
+Q36. let x = [1, 2, 3];
+let y = x.join("");
+
+console.log(typeof y);
+
+Ans. string
+Explanation: x is initialized as an array with values [1, 2, 3]. The join method is called on x with the argument "", which joins the elements of x into a single string with no separator characters between them. The resulting string is assigned to the variable y.
+The typeof operator is used to get the type of y. Since y is a string, the output of typeof y is "string".
+
+Q37. let margin = "10px";
+let x = parseInt(margin);
+
+console.log(parseInt(x));
+
+Ans. 10
+
+Explanation: margin is initialized as a string with the value "10px". The parseInt function is called on the margin, which parses the integer value 10 from the beginning of the string and returns it as a number. The resulting number 10 is assigned to the variable x.
+
+The parseInt function is called again on the value of x, which is already a number. This is not necessary, but it does not cause any errors. The resulting value of parseInt(x) is still 10, which gets outputted to the console.
+
+Q38. setTimeout(() => {
+  console.log(1);
+}, 0);
+
+console.log(2);
+
+Ans. 2, 1
+
+Explanation: The setTimeout function is called with an arrow function as its first argument and a delay of 0 milliseconds as its second argument. This means that the arrow function will be executed as soon as possible, but not necessarily immediately. The console.log method is called with argument 2, which outputs the value 2 to the console. Since the delay of the setTimeout function is 0, the arrow function is placed in the event loop and will be executed after the current synchronous code has finished executing. The console.log method inside the arrow function is executed, which outputs the value 1 to the console. Therefore, the final output of the code is 2 followed by 1.
+
+Q39. let x = [1, 2, 3];
+let y = x.map((x, i) => x + i);
+
+console.log(y);
+
+Ans. [1, 3, 5]
+
+Explanation: x is initialized as an array with values [1, 2, 3]. The map method is called on x with an arrow function as its argument. The arrow function takes two arguments, x which represents the value of the current element, and i which represents the index of the current element. The arrow function returns x + i, which adds the index i to the value of each element x. The resulting array [1, 3, 5] is assigned to the variable y. The console.log method is called with the argument y, which outputs the value [1, 3, 5] to the console.
+Therefore, the final output of the code is the array [1, 3, 5].
+
+Q40. let x = [null, 0, "0", false, "a"];
+let y = x.filter((value) => value);
+
+console.log(y);
+
+Ans. [ '0', 'a' ]
+
+Explanation:  x is initialized as an array with values [null, 0, "0", false, "a"]. The filter method is called on x with an arrow function as its argument. The arrow function takes one argument, value, which represents the value of the current element. The arrow function returns the value, which is a truthy value if the value is a non-empty string or a boolean true, and is a falsy value if the value is null, 0, false, or an empty string.
+
+The filter method creates a new array with all elements that pass the test implemented by the arrow function. In this case, the resulting array will only contain the values "0" and "a", which are the only truthy values in the original array. The resulting array ["0", "a"] is assigned to the variable y. The console.log method is called with the argument y, which outputs the value ["0", "a"] to the console.
+
+Therefore, the final output of the code is the array ["0", "a"].
+
+
+
+
+Q41. let x = true;
+let y = false;
+
+console.log(x + y);
+
+Ans. 1
+
+Explanation: When you use the + operator with boolean values in JavaScript, they are implicitly converted to numbers, where true becomes 1 and false becomes 0. Therefore, the expression x + y evaluates to 1 + 0, which equals 1. 
+
+So the output of console.log(x + y) would be 1.
+
+Q42. let x = ["apple", "banana", "cherry"];
+let y = x.filter((i) => i.startsWith("b"));
+
+console.log(y);
+
+Ans. [ 'banana' ]
+
+Explanation: This code defines an array x with three elements, then uses the filter method to create a new array y containing only the elements of x that start with the letter "b". 
+
+In this case, the filter method takes a callback function as its argument, which is applied to each element in the x array. The callback function (i) => i.startsWith("b") tests whether each element i in x starts with the letter "b". If it does, that element is included in the new array y, otherwise, it is excluded. 
+
+The output of console.log(y) will depend on the specific values in x at the time the code is executed. If x contains the values ["apple", "banana", "cherry"] as shown in the code, then y will be an array containing the single element "banana". Therefore, the output of console.log(y) will be ["banana"].
+
+Q43. let x = 10.5;
+let y = parseInt(x);
+
+console.log(y);
+
+Ans. 10
+
+Explanation: The parseInt() function parses a string argument and returns an integer. In this case, the parseFloat() function is not needed since x is already a number. However, if x was a string representation of a number, like "10.5", then parseFloat() would be needed to first convert the string to a number. 
+
+The parseInt() function extracts the integer part of the input, so parseInt(10.5) will return 10. Therefore, the output of console.log(y) will be 10.
+
+Q44. let x = 1;
+
+console.log(x + x++);
+
+Ans. 2
+
+Explanation: The expression x + x++ uses the post-increment operator ++ to increment the value of x after it has been used in the expression. When evaluating the expression, the current value of x is first used in the addition operation x + x, which gives a result of 2. Then, the value of x is incremented by 1 due to the post-increment operator, so x is now 2. However, the value of x after the post-increment operation is not used in the expression. So the final result of the expression x + x++ is 2, not 3.
+
+Therefore, the output of console.log(x + x++) will be 2. After the expression is evaluated, the value of x will be 2.
+
+Q45. let x = [1];
+let y = x + 1;
+
+console.log(y);
+
+Explanation: In this code, the + operator is used to concatenate the array x with the number 1. When a value of a different type is concatenated with an array, the array is first converted to a string using the toString() method. The toString() method for an array returns a comma-separated list of its elements enclosed in square brackets, like [1]. So, the concatenation of x with 1 results in the string "1" + "1", which gives "11". Therefore, the output of console.log(y) will be "11".
+
+Q46. let x = 7;
+let y = !!x && !!!x;
+
+console.log(y);
+
+Ans. false
+
+Explanation: In this code, the !! operator is used to convert the value of x to a boolean. The first ! operator negates the value of x and returns false since x is a non-zero number. The second ! operator negates the boolean value false, so it becomes true. 
+
+Then, the && operator is used to perform a logical AND operation between the two boolean values true and false. In a logical AND operation, both operands must be true for the result to be true. Since one of the operands (false) is false, the result of the && operation is false.
+
+Therefore, the output of console.log(y) will be false.
+
+Q47. let a = 10;
+let b = (a, a + 10);
+
+console.log(b);
+
+Ans. 20
+
+Explanation: In this code, the comma operator, is used to evaluate two expressions: first, the expression a, which has the value 10, and then the expression a + 10, which has the value 20. 
+
+The comma operator evaluates both expressions but returns only the value of the second expression (a + 10), which is 20. Therefore, the value of b is 20.
+
+Therefore, the output of console.log(b) will be 20.
+
+Q48. let x = "5";
+let y = 3;
+
+console.log(x - y);
+
+Ans. 2
+
+Explanation: In this code, the - operator is used to subtract the value of y from the value of x. When the - operator is used with a string and a number, the string is automatically converted to a number before the subtraction operation is performed. So the string "5" is converted to the number 5. Then, the expression x - y evaluates to 5 - 3, which is 2. 
+
+Therefore, the output of console.log(x - y) will be 2.
+
+Q49. let x = 7;
+let y = (typeof x).length;
+
+console.log(y);
+
+Ans. 6
+
+Explanation: In this code, the typeof operator is used to determine the data type of the variable x. Since x is assigned the number 7, the data type of x is "number". The typeof operator returns a string that represents the data type of its operand. The string "number" has a length of 6. Therefore, the value of y is 6. 
+
+Therefore, the output of console.log(y) will be 6.
+
+Q50. let x = 6;
+let y = typeof (x == 6);
+
+console.log(y);
+
+Ans. boolean
+
+Explanation: In this code, the expression (x == 6) uses the equality operator == to compare the value of x with the number 6. Since x has the value 6, the expression evaluates to true. 
+
+The typeof operator is then used to determine the data type of the result of the expression (x == 6), which is a boolean value. The typeof operator returns a string that represents the data type of its operand. 
+
+The string "boolean" has a length of 7. Therefore, the value of y is "boolean". 
+
+Therefore, the output of console.log(y) will be "boolean".
+
+Q51. let x = [1, 2, 3];
+let y = x.slice();
+
+console.log(y, x === y);
+
+Ans. [ 1, 2, 3 ], false
+
+Explanation: In this code, the slice() method is used to create a shallow copy of the array x. The slice() method returns a new array with the same elements as the original array. Since the slice() method creates a new array, it does not modify the original array x. 
+
+The new array is assigned to the variable y. The equality operator === is used to compare x and y for identity, i.e., whether they refer to the same object in memory. Since y is a new array that has the same elements as x but is a different object in memory, the comparison x === y returns false. 
+
+Therefore, the output of console.log(y, x === y) will be the string representation of the array y followed by false.
+
+Q52. let x = () => {
+  return { y: "z" };
+};
+
+console.log(typeof x().y);
+
+Ans. string
+
+Explanation: In this code, x is defined as an arrow function that returns an object with a single property "y" whose value is "z". When the function x is called with x(), it returns the object { y: "z" }. The dot notation. is used to access the property "y" of the returned object. 
+
+The expression x().y evaluates to the string "z". The typeof operator is then used to determine the data type of the result of the expression, which is a string. 
+
+Therefore, the output of console.log(typeof x().y) will be "string".
+
+Q53. const a = [1, 2, 3];
+const b = [...a];
+b.push(4);
+
+console.log(a);
+
+Ans. [1, 2, 3]
+
+Explanation: In this code, a new array b is created as a copy of array a using the spread syntax (...). Since the spread syntax creates a new array, the two arrays a and b are distinct objects in memory and modifications to one will not affect the other. The push() method is called on b to add the value 4 to the end of the array. 
+
+The output of console.log(a) will be [1, 2, 3] because the original array a is not modified. The push() method only adds the value 4 to the end of array b, which is a separate array. 
+
+Therefore, the output of console.log(a) will be [1, 2, 3].
+
+Q54. let x = [31, 2, 8];
+x.sort();
+
+console.log(x); 
+
+Ans. [ 2, 31, 8 ]
+
+Explanation: In this code, the sort() method is called on the array x. The sort() method sorts the elements of the array in place and returns the sorted array. By default, the sort() method sorts the elements as strings, so the array [31, 2, 8] will be sorted as ["2", "31", "8"]. 
+
+The output of console.log(x) will be ["2", "31", "8"].
+
+Q55. let x = 0;
+let y = "0";
+
+console.log(false == x);
+console.log(false == y);
+
+Ans. true, true
+
+Explanation: In JavaScript, the abstract equality comparison operator == compares two values for equality after attempting to convert them to a common type. If the operands have different types, they are coerced to a common type based on a set of rules defined in the ECMAScript specification. 
+
+In this code, x is a number with a value of 0, and y is a string with a value of "0". 
+
+When false is compared with x using the == operator, x is coerced to a boolean value, which results in false. Therefore, the comparison false == x is equivalent to false == false, which evaluates to true. 
+
+When false is compared with y using the == operator, y is coerced to a number. The string "0" is converted to the number 0. Therefore, the comparison false == y is equivalent to false == 0, which also evaluates to true. 
+
+Therefore, the output of console.log(false == x) will be true, and the output of console.log(false == y) will also be true.
+
+Q56. let x = 018;
+let y = 015;
+
+console.log(x - y);
+
+Ans. 5
+
+Explanation: In this code, the variables x and y are assigned values in octal (base 8) notation because the leading zero in a numeric literal in JavaScript indicates that the number is in octal notation. 
+
+However, starting with ECMAScript 2015 (ES6), the use of a leading zero to denote an octal number literal is deprecated in strict mode and will cause a SyntaxError when encountered. So, to avoid confusion, it's recommended to avoid using leading zeros in numeric literals. 
+
+The values of x and y are 18 and 13 in decimal (base 10) notation, respectively. 
+
+The expression x - y subtracts the value of y from the value of x. Therefore, x - y is equivalent to 18 - 13, which evaluates to 5. 
+
+Therefore, the output of console.log(x - y) will be 5.
+
+Q57. let a = [1, 2, 3];
+let b = [4, 5, 6];
+
+console.log(a + b);
+
+Ans. 1,2,34,5,6
+
+Explanation: When you use the + operator on arrays in JavaScript, it performs string concatenation instead of array concatenation. 
+
+In this code, a and b are arrays containing the values [1, 2, 3] and [4, 5, 6], respectively. When you try to concatenate them using the + operator, both arrays are implicitly converted to strings using their toString method. The toString method returns a string that represents the array and its elements, separated by commas. Therefore, the result of a + b will be the string "1,2,34,5,6".
+
+Q58. let x = [1, 2, 3, 4];
+let [a, ...b] = x.reverse();
+
+console.log(b);
+
+Ans. [ 3, 2, 1 ]
+
+Explanation: In this code, the reverse method is called on the array x, which reverses the order of its elements in place. The reversed array [4, 3, 2, 1] is then destructured into the variables a and b. 
+
+The variable a is assigned the first element of the reversed array, which is 4. The rest of the elements of the reversed array [3, 2, 1] are collected into an array using the rest parameter syntax (...), and assigned to the variable b. Therefore, the value of b will be [3, 2, 1].
+
+Therefore, the output of console.log(b) will be [3, 2, 1].
+
+Q59. const x = true;
+const y = 1;
+
+console.log(x == y, x === y);
+
+Ans. true, false
+
+Explanation: The double equals (==) operator in JavaScript performs type coercion, which means that it converts the operands to a common type before comparing them. On the other hand, the triple equals (===) operator performs a strict comparison, without any type coercion. 
+
+In this code, x is a boolean with a value of true, and y is a number with a value of 1. When you use the == operator to compare them, JavaScript coerces x to a number with a value of 1, since true is treated as 1 in numeric contexts. Therefore, the expression x == y will be true, because 1 == 1. 
+
+However, when you use the === operator to compare them, JavaScript does not perform any type coercion. Therefore, the expression x === y will be false, because true and 1 are of different types. 
+
+Therefore, the output of console.log(x == y, x === y) will be true false.
+
+Q60. let x = (() => {
+  return 9;
+})();
+
+console.log(x);
+
+Ans. 9
+
+
+Asynchronous JavaScript
+Exception Handling
+DOM
+Advanced Topics
+Full Stack Development
+Explore
+JavaScript Output Based Interview Questions
+Last Updated : 23 Jul, 2025
+JavaScript (JS) is the most widely used lightweight scripting and compiled programming language with first-class functions. It is well-known as a scripting language for web pages, mobile apps, web servers, and many more. In this article, we will cover the most asked output-based interview questions of JavaScript.
+
+Q1.
+
+
+
+let x = { b: 1, c: 2 };
+let y = Object.keys(x);
+console.log(y.length);
+let x = { b: 1, c: 2 };
+let y = Object.keys(x);
+console.log(y.length);
+
+Output
+2
+Explanation: The code first creates an object x with two properties b and c, and assigns it to the variable x. Then, the Object.keys() method is used to retrieve an array of the keys of x, which are "b" and "c". This array is assigned to the variable y.
+
+Finally, the length of the array y (which is the number of keys in x) is printed to the console using console.log(). Since y has two elements, the output of y.length will be 2.
+
+
+
+Q2.
+
+
+
+let x = '{ "b": 1, "c": 2 }';
+let y = JSON.parse(x);
+console.log(typeof y);
+let x = '{ "b": 1, "c": 2 }';
+let y = JSON.parse(x);
+console.log(typeof y);
+
+Output
+object
+Explanation: The code creates a string x that contains a JSON-encoded object with two properties "b" and "c", and assigns it to the variable x. The JSON.parse() method is then used to parse the JSON-encoded string x into a JavaScript object, which is assigned to the variable y.
+
+The console.log() statement then outputs the data type of y using the typeof operator. Since y is now an object, the output will be an object.
+
+Q3.
+
+
+
+let x = 0.1 + 0.2;
+let y = 0.3;
+console.log(x == y);
+let x = 0.1 + 0.2;
+let y = 0.3;
+console.log(x == y);
+
+Output
+false
+Explanation: When you run this code and print the result of x == y, you may be surprised to see that it returns false. This is because of a limitation in how JavaScript handles floating-point numbers.
+
+In JavaScript, numbers are represented using the IEEE 754 standard for floating-point arithmetic. This means that not all decimal numbers can be represented exactly as binary floating-point numbers.
+
+In particular, the decimal number 0.1 cannot be represented exactly in binary floating-point format. When you add 0.1 and 0.2 in JavaScript, the result is actually slightly larger than 0.3 due to rounding errors in the binary representation. Therefore, x is not equal to y.
+
+Q4.
+
+
+
+let x = 1 > 2 > 3;
+console.log(x);
+
+Output
+false
+Explanation: This is because the comparison operators (>) in JavaScript are evaluated from left to right, and each comparison operator returns a Boolean value (true or false).
+
+So when we evaluate the expression 1 > 2 > 3, the following happens:
+
+The first comparison, 1 > 2, evaluates to false. The second comparison, false > 3, implicitly converts false to the number 0 and then compares it to 3. Since 0 is not greater than 3, the expression evaluates to false.
+
+Therefore, the value of x is false.
+
+Q5.
+
+
+
+let x = false;
+let y = "0";
+let z = 0;
+​
+console.log(x == y);
+console.log(x == z);
+
+Output
+true
+true
+Explanation: In JavaScript, when you use the == operator to compare values of different types, the operands will be converted to a common type before the comparison is made. This process is called type coercion.
+
+In the first comparison (x == y), x is a Boolean (false) and y is a string ("0"). Since both false and "0" can be coerced to the Boolean false, the comparison returns true.
+
+In the second comparison (x == z), x is a Boolean (false) and z is a number (0). Since both false and 0 can be coerced to the number 0, the comparison returns true.
+
+Q6.
+
+
+
+let x = [];
+console.log(Boolean(x));
+
+Output
+true
+Explanation: In JavaScript, an empty array [] is a truthy value when coerced to a Boolean. This means that when you use Boolean(x) to convert x to a Boolean value, it will return true.
+
+In general, any non-empty array (i.e., an array with one or more elements) is also truthy when coerced to a Boolean.
+
+Q7.
+
+
+
+let x = Infinity;
+console.log(typeof x);
+
+Output
+number
+Explanation: In JavaScript, Infinity is a special numeric value that represents positive infinity. It is a primitive value of the number data type. When you use the typeof operator to check the type of x, it will return "number" because Infinity is a number value, albeit a special one.
+
+Q8.
+
+
+
+let x = "5";
+let y = 2;
+​
+console.log(x + y);
+console.log(x - y);
+
+Output
+52
+3
+Explanation: In the first statement, x is a string ("5") and y is a number (2). When you use the + operator with a string and a number, JavaScript performs string concatenation: it converts the number to a string and then concatenates the two strings. So "5" and 2 are concatenated to produce the string "52".
+
+In the second statement, x is still a string ("5") and y is still a number (2). However, when you use the - operator with a string and a number, JavaScript attempts to convert the string to a number. In this case, "5" can be converted to the number 5, so the expression evaluates to 5 - 2, which is 3.
+
+Q9.
+
+
+
+let a = () => {
+  console.log(this);
+};
+
+a()
+let a = () => {
+  console.log(this);
+};
+​
+a();
+Output
+
+The code will output the global object (Window in a browser, or global in Node.js).
+Explanation: In JavaScript, the behavior of this keyword inside a function depends on how the function is called. When a function is called with no explicit receiver (i.e., no object to the left of the . when calling the function), this will refer to the global object (Window in a browser, or global in Node.js).
+
+In the given code, a is an arrow function that has no explicit receiver when it is called. Therefore, when a() is executed, this will refer to the global object, and the console.log statement inside the function will output the global object.
+
+Q10.
+
+
+
+let x = "hello";
+let y = new String("hello");
+​
+console.log(x == y);
+console.log(x === y);
+
+Output
+true
+false
+Explanation: In JavaScript, the == operator performs type coercion, meaning it converts the operands to a common type before comparing them. In this case, x is a string primitive ("hello") and y is a string object (new String("hello")). When you use the == operator to compare them, JavaScript will convert y to a primitive value using the toString() method, so the comparison becomes "hello" == "hello", which is true.
+
+On the other hand, the === operator performs a strict comparison without any type coercion. In this case, x and y are of different types, so the comparison will always be false, even if their values are the same.
+
+Q11.
+
+
+
+let x = [];
+let y = [];
+let z = x + y;
+​
+console.log(typeof z);
+
+Output
+string
+Explanation: In JavaScript, when you use the + operator with two arrays, or an array and any other object, both operands will be converted to strings before concatenation occurs. This is called implicit type coercion.
+
+In this case, x and y are both empty arrays, which means that z will be the empty string ("") because both arrays will be converted to empty strings before concatenation.
+
+Therefore, when you use the typeof operator to check the type of z, it will return "string" because z is a string.
+
+Q12.
+
+
+
+let x = [1, 2, 3, 4, 5];
+let y = x.filter((n) => n >= 3);
+​
+console.log(y);
+
+Output
+[ 3, 4, 5 ]
+Explanation: In this code, x is an array containing the values [1, 2, 3, 4, 5]. The filter() method is called on x with a callback function that takes a single argument n and returns a Boolean value indicating whether n should be included in the filtered array. In this case, the callback function returns true for values of n that are greater than or equal to 3.
+
+Therefore, y will be a new array containing the values [3, 4, 5], which are the elements of x that satisfy the filtering condition.
+
+When you log y to the console, it will output [3, 4, 5].
+
+Q13.
+
+
+
+let x = true;
+let y = false;
+let z = x + y && x * y;
+​
+console.log(z);
+
+Output
+0
+Explanation: In this code, x and y are both Boolean values. The + operator is used to add x and y. In JavaScript, true is converted to 1, and false is converted to 0 when used in a numeric context, so x + y will be 1 + 0, which is 1.
+
+The && operator is then used to perform a logical AND operation between x + y and x * y. Since x * y is 0 (because multiplying any number by false or 0 is 0), the logical AND operation will also result in 0. Therefore, z will be 0.
+
+When you log z to the console, it will output 0.
+
+Q14.
+
+
+
+function foo(a, b) {
+  console.log(arguments[1]);
+}
+​
+foo(3);
+
+Output
+undefined
+Explanation: In this code, the function foo() takes two arguments a and b. When the function is called on line 4 with only one argument 3, the value of a is set to 3 and the value of b is undefined because no second argument was passed.
+
+The arguments object is an array-like object that contains all the arguments that were passed to a function. In this case, arguments[0] would be 3, and arguments[1] would be undefined.
+
+Therefore, when arguments[1] are logged to the console, it will output undefined.
+
+Q15.
+
+
+
+let x = "false";
+let y = !x;
+​
+console.log(y);
+
+Output
+false
+Explanation: In this code, x is a string containing the value "false". When you use the logical NOT operator (!) with a non-Boolean value, JavaScript will first convert the value to a Boolean and then negate it. Since "false" is a non-empty string, it is considered a truthy value when converted to Boolean, so !x will be the same as !true, which is false.
+
+Therefore, when y is logged into the console, it will output false.
+
+Q16.
+
+
+
+let x = 1;
+let y = "1";
+​
+console.log(++x, ++y);
+
+Output
+2 2
+Explanation: In this code, x is a number containing the value 1, and y is a string containing the value "1".
+
+The ++ operator is used to increment the value of x and y before they are logged into the console. Since x is a number, it can be incremented numerically, and ++x will increment the value of x to 2.
+
+In contrast, since y is a string, it will be first converted to a number before it is incremented. The string "1" can be converted to the number 1, so ++y will also increment the value of y to 2.
+
+Therefore, when ++x and ++y are logged to the console, it will output 2 2.
+
+Q17.
+
+
+
+var num = 8;
+var num = 10;
+​
+console.log(num);
+
+Output
+10
+Explanation: In this code, the var keyword is used to declare the variable num twice. When a variable is declared multiple times using var within the same scope, the later declaration will overwrite the earlier one. 
+
+Therefore, when num is logged to the console, it will output 10, which is the value of the variable after it was reassigned to 10.
+
+Q18.
+
+
+
+let x = "b";
+let y = "a";
+​
+console.log(x + y + + y + y);
+
+Output
+baNaNa
+Explanation: In this code, x is a string containing the value "b", and y is a string containing the value "a". 
+
+The expression x + y concatenates the values of x and y into the string "ba".
+
+The expression +y coerces the value of y into a number. Since y is the string "a", which cannot be coerced into a number, the result of +y is NaN.
+
+Finally, the expression NaN + y concatenates the string "NaN" with the value of y, which is "a", resulting in the string "baNaNaa".
+
+Therefore, when x + y + +y + y is logged to the console, it will output "baNaNaa".
+
+Q19.
+
+
+
+console.log(x);
+​
+var x;
+
+Output
+undefined
+Explanation: In this code, the variable x is declared using the var keyword after it is logged into the console. However, JavaScript moves all variable declarations to the top of their scope (this is called "hoisting"), so the declaration of x is effectively moved to the top of the code, before the console.log() statement.
+
+However, the assignment of a value to x happens after the console.log() statement, so when x is logged to the console, it has not yet been assigned a value. In JavaScript, uninitialized variables have a value of undefined, so undefined will be logged to the console.
+
+Therefore, when console.log(x) is executed, it will output undefined.
+
+Q20.
+
+
+
+let x = true + true;
+let y = x + false;
+​
+console.log(y);
+
+Output
+2
+Explanation: In this code, x is the result of the expression true + true. In JavaScript, the + operator can be used for both addition and concatenation. When used with boolean values, it performs addition, and true is coerced to the number 1. Therefore, true + true evaluates to 2.
+
+The variable y is assigned the result of the expression x + false. Since false is coerced to the number 0, this expression is equivalent to 2 + 0, which evaluates to 2.
+
+Therefore, when y is logged into the console, it will output 2.
+
+Q21.
+
+
+
+let x = [2];
+let y = 2;
+
+console.log(x == y);
+let x = [2];
+let y = 2;
+​
+console.log(x == y);
+
+Output
+true
+Explanation: In this code, x is an array containing the single element 2, and y is the number 2.
+
+When an array is compared to a non-array value using the == operator, JavaScript first attempts to convert both values to a common type. In this case, the array x is coerced to a string, resulting in the string "2". The number y is also coerced to a string, resulting in the string "2".
+
+Since both operands are now strings with the same value, the == operator returns true.
+
+Therefore, when x == y is logged to the console, it will output true.
+
+Q22.
+
+
+
+et x = [1, 2, 3];
+
+console.log(typeof x);
+let x = [1, 2, 3];
+​
+console.log(typeof x);
+
+Output
+object
+Explanation: In JavaScript, arrays are a type of object. Therefore, the typeof operator will return "object" when applied to an array.
+
+Therefore, when typeof x is logged to the console, it will output "object".
+
+Q23.
+
+
+
+const a = { b: { c: 2 } };
+const b = { ...a };
+a.b.c = 3;
+​
+console.log(b.b.c);
+
+Output
+3
+Explanation: In this code, a constant a is defined as an object containing another object b, which in turn contains a property c with a value of 2. Then a constant b is defined by spreading into a new object. This creates a new object b with the same properties and values as a. 
+
+Then the value of the property c in a is changed to 3.
+
+When the property b.b.c is accessed from object b, it will still reference the same object as a.b.c, because b is a new object that contains the same object a.b. Therefore, the value of b.b.c will be 3.
+
+Therefore, when b.b.c is logged into the console, it will output 3.
+
+Q24.
+
+
+
+let x = [1, 2, 3];
+let [, , y] = x;
+​
+console.log(y);
+
+Output
+3
+Explanation: In this code, an array x is defined containing the elements 1, 2, and 3. Then, array destructuring is used to extract the third element of x into a variable y. The comma syntax is used to skip the first two elements of the array.
+
+Therefore, when y is logged into the console, it will output 3.
+
+Q25.
+
+
+
+let x = { a: 1, b: 2 };
+let y = { b: 3 };
+let z = { ...x, ...y };
+​
+console.log(z);
+
+Output
+{ a: 1, b: 3 }
+Explanation: In this code, two objects x and y are defined. x contains properties a and b, while y contains property b. Then, the spread operator ... is used to create a new object z that contains all of the properties from x and y.
+
+When there are conflicting property names, as in this case with the property b, the value from the later object (in this case, y) will overwrite the value from the earlier object (x).
+
+Therefore, when z is logged to the console, it will output { a: 1, b: 3 }.
+
+Q26.
+
+
+
+let x = [1, 2, 3];
+let y = x.map((num) => {
+  x.push(num + 3);
+  return num + 1;
+});
+​
+console.log(y);
+
+Output
+[ 2, 3, 4 ]
+Explanation: In this code, an array x is initially defined with the elements [1, 2, 3]. The .map() function is then called on x, iterating over each element and applying the provided callback function. The callback function takes num (the current element), returns num + 1, and simultaneously pushes num + 3 to the array x. However, an important aspect of .map() is that it determines the number of iterations based on the array's initial length before modifications occur. Since x originally contains three elements, .map() will only execute for the first three elements (1, 2, 3), even though new elements (4, 5, 6) are being pushed to x during the iteration.
+
+This means that map() does not dynamically process the newly added elements, and it strictly iterates three times. As a result, the new array y is created by mapping [1, 2, 3] to [2, 3, 4], while x is mutated to [1, 2, 3, 4, 5, 6] by the end of the execution. This behavior occurs because .map() is not influenced by modifications made to the array after iteration begins. Thus, when console.log(y) is executed, the output is [2, 3, 4], while console.log(x) outputs [1, 2, 3, 4, 5, 6].
+
+Q27.
+
+
+
+let arr = [1, 2, 3];
+arr[10] = 4;
+​
+console.log(arr.length);
+
+Output
+11
+Explanation: In this code, an array arr is defined containing the elements 1, 2, and 3. The line arr[10] = 4 sets the value of the element at index 10 to 4. Since there are no elements in arr between indices 3 and 10, these indices are considered "empty slots" in the array. However, this does not affect the length of the array, which is determined by the highest index in the array plus one.
+
+In this case, the highest index in the array is 10, so the length of the array is 11 (since the array contains elements at indices 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, and 10). Therefore, when arr.length is logged to the console, it will output 11.
+
+Q28.
+
+
+
+let x = { a: 1 };
+let y = Object.assign({}, x);
+​
+console.log(x === y);
+
+Output
+false
+Explanation: In this code, an object x is defined with a property set to 1. The Object.assign() method is then used to create a new object y with the same properties as x. Since Object.assign() creates a new object and does not modify the original object, x, and y are two distinct objects with the same properties.
+
+When x === y is evaluated, it checks whether x and y are the same objects in memory. Since x and y are two separate objects, each with their own memory address, x === y will evaluate to false.
+
+Q29.
+
+
+
+let x = [1, 2, 3, 5];
+​
+x.forEach((e) => {
+  if (e > 2 && e < 5) return;
+  console.log(e);
+});
+
+Output
+1
+2
+5
+Explanation: In this code, an array x is defined with four elements. The forEach() method is then used to iterate over each element in x.
+
+For each element, the code checks if it is greater than 2 and less than 5. If so, it uses the return statement to exit the current iteration and move on to the next element. If not, it prints the element using console.log().
+
+So, the first three elements (1, 2, and 3) are printed, but the fourth element (5) is also printed because it does not satisfy the condition in the if statement.
+
+Q30.
+
+
+
+let x = 10;
+let y = 20;
+​
+console.log("total = " + x + y);
+
+Output
+total = 1020
+Explanation: This is because the + operator is used for both addition and string concatenation in JavaScript, and it has left-to-right associativity. In this case, the first operand is the string "total = ", so the second operand x is coerced to a string and concatenated to it. Then, the third operand y is also coerced to a string and concatenated to the resulting string.
+
+Q31.
+
+
+
+let x = 5;
+let y = 6;
+x += x > y ? x : y;
+​
+console.log(x);
+
+Output
+11
+Explanation: x is initialized to 5 and y is initialized to 6.
+The expression x > y is evaluated. Since x is not greater than y, this expression evaluates to false.
+The ternary operator (?:) evaluates its second operand, y, since the condition is false.
+The result of the ternary operator is then added to x using the += operator. So x is incremented by y, which is currently 6.
+The value of x is now 11.
+Finally, x is logged to the console, which outputs 11.
+
+Q32.
+
+
+
+const arr = [1, 2, 3];
+arr.forEach((num) => num * 2);
+​
+console.log(arr);
+
+Output
+[ 1, 2, 3 ]
+Explanation: The forEach method is called on arr, which iterates over each element in the array and applies the function (num) => num * 2 to each element. This function doubles the value of each element but does not modify the original array, since it does not mutate the array in place. The console.log method is called with arr as its argument, which outputs the contents of the array to the console.
+
+Since the original array was not mutated, the output is [1, 2, 3].
+
+Q33.
+
+
+
+let a = [1, 2, 3];
+a.push(a[2]++);
+
+console.log(a);
+let a = [1, 2, 3];
+a.push(a[2]++);
+​
+console.log(a);
+
+Output
+[ 1, 2, 4, 3 ]
+Explanation: a is initialized as an array with values [1, 2, 3]. The push method is called on a, with the argument a[2]++. This accesses the third element of a, which is 3, and then increments it by 1 using the ++ operator. The resulting value, 4, is then pushed to the end of the 'a' array.
+
+The console.log method is called with 'a' as its argument, which outputs the contents of the array to the console.
+The 'a' array now contains the values [1, 2, 4, 3].
+
+Q34.
+
+
+
+let x;
+​
+console.log(x);
+
+Output
+undefined
+Explanation: x is declared but not initialized, which means it does not have a value assigned to it. The console.log method is called with x as its argument, which outputs the value of x to the console. Since x has not been assigned a value, its value is undefined, which is what gets outputted to the console.
+
+Q35.
+
+
+
+let x = {
+  y: "z",
+  print: () => {
+    return this.y === "z";
+  },
+};
+​
+console.log(x.print());
+
+Output
+false
+Explanation: x is initialized as an object with a property y that has a value of "z", and a method print that uses an arrow function to return this.y === "z". The console.log method is called with the result of x.print() as its argument.
+
+The print method uses an arrow function, which means that this refers to the global object, not the x object that print is a property of. Therefore, this.y is undefined, and the expression this.y === "z" evaluates to false.
+The result of x.print() is false, which gets outputted to the console.
+
+Q36.
+
+
+
+let x = [1, 2, 3];
+let y = x.join("");
+​
+console.log(typeof y);
+
+Output
+string
+Explanation: x is initialized as an array with values [1, 2, 3]. The join method is called on x with the argument "", which joins the elements of x into a single string with no separator characters between them. The resulting string is assigned to the variable y.
+The typeof operator is used to get the type of y. Since y is a string, the output of typeof y is "string".
+
+Q37.
+
+
+
+let margin = "10px";
+let x = parseInt(margin);
+​
+console.log(parseInt(x));
+
+Output
+10
+Explanation: margin is initialized as a string with the value "10px". The parseInt function is called on the margin, which parses the integer value 10 from the beginning of the string and returns it as a number. The resulting number 10 is assigned to the variable x.
+
+The parseInt function is called again on the value of x, which is already a number. This is not necessary, but it does not cause any errors. The resulting value of parseInt(x) is still 10, which gets outputted to the console.
+
+Q38.
+
+
+
+setTimeout(() => {
+  console.log(1);
+}, 0);
+​
+console.log(2);
+
+Output
+2
+1
+Explanation: The setTimeout function is called with an arrow function as its first argument and a delay of 0 milliseconds as its second argument. This means that the arrow function will be executed as soon as possible, but not necessarily immediately. The console.log method is called with argument 2, which outputs the value 2 to the console. Since the delay of the setTimeout function is 0, the arrow function is placed in the event loop and will be executed after the current synchronous code has finished executing. The console.log method inside the arrow function is executed, which outputs the value 1 to the console. Therefore, the final output of the code is 2 followed by 1.
+
+Q39.
+
+
+
+let x = [1, 2, 3];
+let y = x.map((x, i) => x + i);
+​
+console.log(y);
+
+Output
+[ 1, 3, 5 ]
+Explanation: x is initialized as an array with values [1, 2, 3]. The map method is called on x with an arrow function as its argument. The arrow function takes two arguments, x which represents the value of the current element, and i which represents the index of the current element. The arrow function returns x + i, which adds the index i to the value of each element x. The resulting array [1, 3, 5] is assigned to the variable y. The console.log method is called with the argument y, which outputs the value [1, 3, 5] to the console.
+Therefore, the final output of the code is the array [1, 3, 5].
+
+Q40.
+
+
+
+let x = [null, 0, "0", false, "a"];
+let y = x.filter((value) => value);
+​
+console.log(y);
+
+Output
+[ '0', 'a' ]
+Explanation:  x is initialized as an array with values [null, 0, "0", false, "a"]. The filter method is called on x with an arrow function as its argument. The arrow function takes one argument, value, which represents the value of the current element. The arrow function returns the value, which is a truthy value if the value is a non-empty string or a boolean true, and is a falsy value if the value is null, 0, false, or an empty string.
+
+The filter method creates a new array with all elements that pass the test implemented by the arrow function. In this case, the resulting array will only contain the values "0" and "a", which are the only truthy values in the original array. The resulting array ["0", "a"] is assigned to the variable y. The console.log method is called with the argument y, which outputs the value ["0", "a"] to the console.
+
+Therefore, the final output of the code is the array ["0", "a"].
+
+Q41.
+
+
+
+let x = true;
+let y = false;
+​
+console.log(x + y);
+
+Output
+1
+Explanation: When you use the + operator with boolean values in JavaScript, they are implicitly converted to numbers, where true becomes 1 and false becomes 0. Therefore, the expression x + y evaluates to 1 + 0, which equals 1. 
+
+So the output of console.log(x + y) would be 1.
+
+Q42.
+
+
+
+let x = ["apple", "banana", "cherry"];
+let y = x.filter((i) => i.startsWith("b"));
+​
+console.log(y);
+
+Output
+[ 'banana' ]
+Explanation: This code defines an array x with three elements, then uses the filter method to create a new array y containing only the elements of x that start with the letter "b". 
+
+In this case, the filter method takes a callback function as its argument, which is applied to each element in the x array. The callback function (i) => i.startsWith("b") tests whether each element i in x starts with the letter "b". If it does, that element is included in the new array y, otherwise, it is excluded. 
+
+The output of console.log(y) will depend on the specific values in x at the time the code is executed. If x contains the values ["apple", "banana", "cherry"] as shown in the code, then y will be an array containing the single element "banana". Therefore, the output of console.log(y) will be ["banana"].
+
+Q43.
+
+
+
+let x = 10.5;
+let y = parseInt(x);
+​
+console.log(y);
+
+Output
+10
+Explanation: The parseInt() function parses a string argument and returns an integer. In this case, the parseFloat() function is not needed since x is already a number. However, if x was a string representation of a number, like "10.5", then parseFloat() would be needed to first convert the string to a number. 
+
+The parseInt() function extracts the integer part of the input, so parseInt(10.5) will return 10. Therefore, the output of console.log(y) will be 10.
+
+Q44.
+
+
+
+let x = 1;
+​
+console.log(x + x++);
+
+Output
+2
+Explanation: The expression x + x++ uses the post-increment operator ++ to increment the value of x after it has been used in the expression. When evaluating the expression, the current value of x is first used in the addition operation x + x, which gives a result of 2. Then, the value of x is incremented by 1 due to the post-increment operator, so x is now 2. However, the value of x after the post-increment operation is not used in the expression. So the final result of the expression x + x++ is 2, not 3.
+
+Therefore, the output of console.log(x + x++) will be 2. After the expression is evaluated, the value of x will be 2.
+
+Q45.
+
+
+
+let x = [1];
+let y = x + 1;
+​
+console.log(y);
+
+Output
+11
+Explanation: In this code, the + operator is used to concatenate the array x with the number 1. When a value of a different type is concatenated with an array, the array is first converted to a string using the toString() method. The toString() method for an array returns a comma-separated list of its elements enclosed in square brackets, like [1]. So, the concatenation of x with 1 results in the string "1" + "1", which gives "11". Therefore, the output of console.log(y) will be "11".
+
+Q46.
+
+
+
+let x = 7;
+let y = !!x && !!!x;
+​
+console.log(y);
+
+Output
+false
+Explanation: In this code, the !! operator is used to convert the value of x to a boolean. The first ! operator negates the value of x and returns false since x is a non-zero number. The second ! operator negates the boolean value false, so it becomes true. 
+
+Then, the && operator is used to perform a logical AND operation between the two boolean values true and false. In a logical AND operation, both operands must be true for the result to be true. Since one of the operands (false) is false, the result of the && operation is false.
+
+Therefore, the output of console.log(y) will be false.
+
+Q47.
+
+
+
+let a = 10;
+let b = (a, a + 10);
+​
+console.log(b);
+
+Output
+20
+Explanation: In this code, the comma operator, is used to evaluate two expressions: first, the expression a, which has the value 10, and then the expression a + 10, which has the value 20. 
+
+The comma operator evaluates both expressions but returns only the value of the second expression (a + 10), which is 20. Therefore, the value of b is 20.
+
+Therefore, the output of console.log(b) will be 20.
+
+Q48.
+
+
+
+let x = "5";
+let y = 3;
+​
+console.log(x - y);
+
+Output
+2
+Explanation: In this code, the - operator is used to subtract the value of y from the value of x. When the - operator is used with a string and a number, the string is automatically converted to a number before the subtraction operation is performed. So the string "5" is converted to the number 5. Then, the expression x - y evaluates to 5 - 3, which is 2. 
+
+Therefore, the output of console.log(x - y) will be 2.
+
+Q49.
+
+
+
+let x = 7;
+let y = (typeof x).length;
+​
+console.log(y);
+
+Output
+6
+Explanation: In this code, the typeof operator is used to determine the data type of the variable x. Since x is assigned the number 7, the data type of x is "number". The typeof operator returns a string that represents the data type of its operand. The string "number" has a length of 6. Therefore, the value of y is 6. 
+
+Therefore, the output of console.log(y) will be 6.
+
+Q50.
+
+
+
+let x = 6;
+let y = typeof (x == 6);
+​
+console.log(y);
+
+Output
+boolean
+Explanation: In this code, the expression (x == 6) uses the equality operator == to compare the value of x with the number 6. Since x has the value 6, the expression evaluates to true. 
+
+The typeof operator is then used to determine the data type of the result of the expression (x == 6), which is a boolean value. The typeof operator returns a string that represents the data type of its operand. 
+
+The string "boolean" has a length of 7. Therefore, the value of y is "boolean". 
+
+Therefore, the output of console.log(y) will be "boolean".
+
+Q51.
+
+
+
+let x = [1, 2, 3];
+let y = x.slice();
+​
+console.log(y, x === y);
+
+Output
+[ 1, 2, 3 ] false
+Explanation: In this code, the slice() method is used to create a shallow copy of the array x. The slice() method returns a new array with the same elements as the original array. Since the slice() method creates a new array, it does not modify the original array x. 
+
+The new array is assigned to the variable y. The equality operator === is used to compare x and y for identity, i.e., whether they refer to the same object in memory. Since y is a new array that has the same elements as x but is a different object in memory, the comparison x === y returns false. 
+
+Therefore, the output of console.log(y, x === y) will be the string representation of the array y followed by false.
+
+Q52.
+
+
+
+let x = () => {
+  return { y: "z" };
+};
+​
+console.log(typeof x().y);
+Explanation: In this code, x is defined as an arrow function that returns an object with a single property "y" whose value is "z". When the function x is called with x(), it returns the object { y: "z" }. The dot notation. is used to access the property "y" of the returned object. 
+
+The expression x().y evaluates to the string "z". The typeof operator is then used to determine the data type of the result of the expression, which is a string. 
+
+Therefore, the output of console.log(typeof x().y) will be "string".
+
+Q53.
+
+
+
+const a = [1, 2, 3];
+const b = [...a];
+b.push(4);
+​
+console.log(a);
+
+Output
+[ 1, 2, 3 ]
+Explanation: In this code, a new array b is created as a copy of array a using the spread syntax (...). Since the spread syntax creates a new array, the two arrays a and b are distinct objects in memory and modifications to one will not affect the other. The push() method is called on b to add the value 4 to the end of the array. 
+
+The output of console.log(a) will be [1, 2, 3] because the original array a is not modified. The push() method only adds the value 4 to the end of array b, which is a separate array. 
+
+Therefore, the output of console.log(a) will be [1, 2, 3].
+
+Q54.
+
+
+
+let x = [31, 2, 8];
+x.sort();
+
+console.log(x);
+let x = [31, 2, 8];
+x.sort();
+​
+console.log(x);
+
+Output
+[ 2, 31, 8 ]
+Explanation: In this code, the sort() method is called on the array x. The sort() method sorts the elements of the array in place and returns the sorted array. By default, the sort() method sorts the elements as strings, so the array [31, 2, 8] will be sorted as ["2", "31", "8"]. 
+
+The output of console.log(x) will be ["2", "31", "8"].
+
+Q55.
+
+
+
+let x = 0;
+let y = "0";
+​
+console.log(false == x);
+console.log(false == y);
+
+Output
+true
+true
+Explanation: In JavaScript, the abstract equality comparison operator == compares two values for equality after attempting to convert them to a common type. If the operands have different types, they are coerced to a common type based on a set of rules defined in the ECMAScript specification. 
+
+In this code, x is a number with a value of 0, and y is a string with a value of "0". 
+
+When false is compared with x using the == operator, x is coerced to a boolean value, which results in false. Therefore, the comparison false == x is equivalent to false == false, which evaluates to true. 
+
+When false is compared with y using the == operator, y is coerced to a number. The string "0" is converted to the number 0. Therefore, the comparison false == y is equivalent to false == 0, which also evaluates to true. 
+
+Therefore, the output of console.log(false == x) will be true, and the output of console.log(false == y) will also be true.
+
+Q56.
+
+
+
+let x = 018;
+let y = 015;
+​
+console.log(x - y);
+
+Output
+5
+Explanation: In this code, the variables x and y are assigned values in octal (base 8) notation because the leading zero in a numeric literal in JavaScript indicates that the number is in octal notation. 
+
+However, starting with ECMAScript 2015 (ES6), the use of a leading zero to denote an octal number literal is deprecated in strict mode and will cause a SyntaxError when encountered. So, to avoid confusion, it's recommended to avoid using leading zeros in numeric literals. 
+
+The values of x and y are 18 and 13 in decimal (base 10) notation, respectively. 
+
+The expression x - y subtracts the value of y from the value of x. Therefore, x - y is equivalent to 18 - 13, which evaluates to 5. 
+
+Therefore, the output of console.log(x - y) will be 5.
+
+Q57.
+
+
+
+let a = [1, 2, 3];
+let b = [4, 5, 6];
+​
+console.log(a + b);
+
+Output
+1,2,34,5,6
+Explanation: When you use the + operator on arrays in JavaScript, it performs string concatenation instead of array concatenation. 
+
+In this code, a and b are arrays containing the values [1, 2, 3] and [4, 5, 6], respectively. When you try to concatenate them using the + operator, both arrays are implicitly converted to strings using their toString method. The toString method returns a string that represents the array and its elements, separated by commas. Therefore, the result of a + b will be the string "1,2,34,5,6".
+
+Q58.
+
+
+
+let x = [1, 2, 3, 4];
+let [a, ...b] = x.reverse();
+​
+console.log(b);
+
+Output
+[ 3, 2, 1 ]
+Explanation: In this code, the reverse method is called on the array x, which reverses the order of its elements in place. The reversed array [4, 3, 2, 1] is then destructured into the variables a and b. 
+
+The variable a is assigned the first element of the reversed array, which is 4. The rest of the elements of the reversed array [3, 2, 1] are collected into an array using the rest parameter syntax (...), and assigned to the variable b. Therefore, the value of b will be [3, 2, 1].
+
+Therefore, the output of console.log(b) will be [3, 2, 1].
+
+Q59.
+
+
+
+const x = true;
+const y = 1;
+​
+console.log(x == y, x === y);
+
+Output
+true false
+Explanation: The double equals (==) operator in JavaScript performs type coercion, which means that it converts the operands to a common type before comparing them. On the other hand, the triple equals (===) operator performs a strict comparison, without any type coercion. 
+
+In this code, x is a boolean with a value of true, and y is a number with a value of 1. When you use the == operator to compare them, JavaScript coerces x to a number with a value of 1, since true is treated as 1 in numeric contexts. Therefore, the expression x == y will be true, because 1 == 1. 
+
+However, when you use the === operator to compare them, JavaScript does not perform any type coercion. Therefore, the expression x === y will be false, because true and 1 are of different types. 
+
+Therefore, the output of console.log(x == y, x === y) will be true false.
+
+Q60.
+
+
+
+let x = (() => {
+  return 9;
+})();
+​
+console.log(x);
+
+Output
+9
+Explanation: This code defines an anonymous function using the arrow function syntax and immediately invokes it by adding () at the end, which creates a function expression that is immediately called as soon as it is defined. The function simply returns the value 9. The returned value is then assigned to the variable x. 
+
+Therefore, the output of console.log(x) will be 9.
+
+Q61. let x = [1, 2, 3];
+
+console.log(x.concat(4, 5));
+
+Ans. [ 1, 2, 3, 4, 5 ]
+
+Explanation: The concat() method in JavaScript returns a new array that contains the elements of the original array, followed by one or more additional arrays and/or values. 
+
+In this code, the concat() method is called on the array [1, 2, 3] with the arguments 4 and 5. Therefore, it will return a new array that contains the elements of the original array followed by the two additional values, resulting in the array [1, 2, 3, 4, 5]. 
+
+Therefore, the output of console.log(x.concat(4, 5)) will be [1, 2, 3, 4, 5]. Note that the original array x is not modified by the concat() method; instead, a new array is returned

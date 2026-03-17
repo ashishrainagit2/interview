@@ -1,0 +1,157 @@
+Q1. Is JavaScript synchronous or asynchronous?
+ANS: JavaScript is single-threaded and synchronous, but it supports asynchronous behavior using callbacks, promises, and async/await.
+
+Q2. What are data types in JavaScript?
+ANS: JavaScript data types are grouped into:
+Primitive: string, number, boolean, undefined, null, symbol, bigint
+Non-primitive: object, array, function
+
+Q3. Difference between var, let, and const?
+ANS:
+var: function-scoped
+let: block-scoped
+const: block-scoped, cannot be reassigned
+
+Q4. What is hoisting?
+ANS: Hoisting is JavaScript's behavior of moving declarations to the top of the scope before execution
+
+Q5. What is closure?
+ANS: A closure is a function that remembers variables from its outer scope even after the outer function has executed.
+
+Q6. What is this keyword?
+ANS: this refers to the object that is currently calling the function.
+
+Q7. What is an arrow function?
+ANS: Arrow functions use shorter syntax and do not have their own this.
+
+Q8. Difference between == and ===?
+ANS: == checks value only; === checks value and type.
+
+Q9. What is a callback function?
+ANS: A function passed as an argument to another function and executed later.
+
+Q10. What are promises?
+ANS: Promises represent the result of an asynchronous operation: pending, fulfilled, or rejected.
+
+Q11. What is async/await?
+ANS: It is syntax to handle promises in a cleaner, synchronous-looking way.
+
+Q12. What is event bubbling?
+ANS: Event bubbling means the event propagates from child to parent.
+
+Q13. What is event capturing?
+ANS: Event Capturing means the event propagates from parent to child.
+
+Q14. What is the DOM?
+ANS: DOM (Document Object Model) represents the HTML structure as objects.
+
+Q15. Difference between null and undefined?
+ANS: null is an intentional empty value; undefined means the variable is declared but not assigned.
+
+Q16. What is NaN?
+ANS: NaN stands for "Not a Number" and represents invalid number operations.
+
+Q17. What is the spread operator?
+ANS: ... is used to expand arrays or objects.
+
+Q18. What is the rest operator?
+ANS: It collects multiple values into a single array.
+
+Q19. What is destructuring?
+ANS: Destructuring extracts values from arrays or objects into variables.
+
+Q20. What is an IIFE?
+ANS: Immediately Invoked Function Expression runs as soon as it is defined.
+
+Q21. What are JavaScript arrays?
+ANS: Arrays store multiple values in a single variable.
+
+Q22. Difference between map, filter, and reduce?
+ANS:
+map: transforms array
+filter: selects items
+reduce: accumulates values
+
+Q23. What is a prototype?
+ANS: Prototype allows objects to inherit properties and methods.
+
+Q24. What is prototype chaining?
+ANS: Accessing properties through a chain of prototypes.
+
+Q25. What is memory leak?
+ANS: Unused memory that is not released properly.
+
+Q26. What is setTimeout?
+ANS: Executes code after a specified delay.
+
+Q27. What is setInterval?
+ANS: Executes code repeatedly at given intervals.
+
+Q28. What is JSON?
+ANS: JavaScript Object Notation is a data exchange format.
+
+Q29. Difference between call, apply, and bind?
+ANS:
+call: arguments individually
+apply: arguments as array
+bind: returns new function
+
+Q30. What is currying?
+ANS: Transforming a function with multiple arguments into nested functions.
+
+Q31. What is debouncing?
+ANS: Limits function execution after a delay.
+
+Q32. What is throttling?
+ANS: Limits function execution at fixed intervals.
+
+Q33. What is strict mode?
+ANS: "use strict" enforces cleaner and safer JavaScript code.
+
+Q34. What is lexical scope?
+ANS: Scope defined by code placement, not execution.
+
+Q35. What is an object?
+ANS: A collection of key-value pairs.
+
+Q36. Difference between shallow and deep copy?
+ANS: Shallow copy shares references, deep copy creates independent copies.
+
+Q37. What is localStorage?
+ANS: Limits function execution after a delay.
+
+Q38. What is sessionStorage?
+ANS: Stores data for the browser session only.
+
+Q39. What is event delegation?
+ANS: Handling events using a parent element.
+
+Q40. What is a module?
+ANS: A reusable piece of code exported and imported.
+
+Q41. What is typeof operator?
+ANS: Used to check the data type of a variable.
+
+Q42. What is garbage collection?
+ANS: Automatic memory management in JavaScript.
+
+Q43. What is temporal dead zone?
+ANS: Accessing let or const before declaration causes error.
+
+Q44. What is optional chaining?
+ANS: Safely access nested object properties using ?.
+
+Q45. What is a promise chain?
+ANS: Multiple .then() calls linked together.
+
+Q46. What is the event loop?
+ANS: Handles asynchronous operations in JavaScript.
+
+Q47. What are higher-order functions?
+ANS: Functions that accept or return other functions.
+
+Q48. What is memoization?
+ANS: Caching function results for performance.
+
+Q49. What is JavaScript engine?
+ANS: Program that executes JavaScript code (e.g., V8).
