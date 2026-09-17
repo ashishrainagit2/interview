@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mini Redux — plain JS</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 420px;
+        margin: 40px auto;
+        padding: 0 16px;
+      }
+      #count {
+        font-size: 48px;
+        font-weight: 700;
+      }
+      button {
+        margin: 4px 4px 4px 0;
+        padding: 8px 14px;
+        cursor: pointer;
+      }
+      #log {
+        margin-top: 24px;
+        font-family: ui-monospace, monospace;
+        font-size: 13px;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mini Redux</h1>
+    <p>Count: <span id="count">0</span></p>
+
+    <button id="inc" type="button">+</button>
+    <button id="dec" type="button">−</button>
+    <button id="add5" type="button">+5</button>
+    <button id="stop" type="button">Stop listening (unsubscribe)</button>
+
+    <div id="log"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

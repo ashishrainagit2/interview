@@ -1,0 +1,5 @@
+if(num !== null && num ! == undefined)
+
+or
+
+if(num)

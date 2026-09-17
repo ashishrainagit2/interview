@@ -1,0 +1,120 @@
+# Oracle interview — Ashish
+
+**When:** Mon, 31 Aug 2026, 03:00 PM Asia/Calcutta  
+**Duration:** 60 minutes  
+**Role:** Principal Application Software Engineer  
+**Interviewer:** Chiradeep Biswas (Principal Software Engineer, Oracle)  
+**Format:** Zoom video + HackerRank whiteboard  
+**Recruiters:** venkata.gonugunta@oracle.com / prasad.maruthi@oracle.com
+
+This is **one 60-minute Zoom + HackerRank**. Treat it as **live coding + talk**, not a YouTube recap. Principal means they care that you can **write, explain, and trade off**, not recite Fiber.
+
+You have **Wed–Sun**. Stop adding new playlists. Drill what Oracle actually asks.
+
+---
+
+## Logistics (do tonight, 20 min)
+
+- Badge ready on screen (digital is enough). Camera, light, mic.
+- HackerRank: create an account, try their editor once. They will share the whiteboard **after** you join.
+- Join Zoom **5 min early**. Recruiter only if Zoom/HackerRank is broken.
+- Read **Job Description** and **Interview Insights** they attached. Failure to follow Insights can hurt candidacy.
+- Camera on, face visible, stable internet. You may be asked to share screen.
+- Reschedules are strongly discouraged.
+
+---
+
+## What this hour will likely be
+
+From similar Principal / SDE-3 UI loops:
+
+1. Intro + current project (5–10 min)
+2. **JS on HackerRank** — flatten/squash object, array intersection with dupes, debounce, polyfill (`map` / `Promise.all`), maybe a tiny Redux store
+3. **Talk while you type** — complexity, edge cases, React/performance if they pivot
+4. Your questions (2 min)
+
+If Chiradeep goes more CS (IITK / systems-heavy on paper), still expect **Easy/Medium arrays-strings in JS**, not LeetCode Hard.
+
+---
+
+## Day-by-day
+
+### Wed — machine coding in JS (highest ROI)
+
+Write these **from blank**, no copy-paste, out loud:
+
+- Squash/flatten nested object (dot keys) — https://www.greatfrontend.com/questions/javascript/squash-object
+- Intersection with duplicates: `[1,2,2,4,5]` ∩ `[3,2,4,2]` → `[2,2,4]`
+- Flatten nested array
+- `debounce` + `Promise.all` polyfill
+- Mini store: `createStore(reducer)` with `getState`, `dispatch`, `subscribe`
+
+### Thu — JS internals
+
+Event loop (sync → micro → macro), closures, `this`/arrows, hoisting/TDZ. One output question each, **predict then run**.
+
+### Fri — React as a senior, not definitions
+
+One story for each, from **your** app:
+
+- Why this page re-rendered / how you stopped it (`memo` vs colocate vs `children`)
+- Slow list → virtualize / windowing
+- `useEffect` vs `useLayoutEffect` (one flicker example)
+- Controlled vs uncontrolled
+- Auth + cache: what is Redux vs local state
+- Same API fired twice: abort, dedupe, stale response
+
+### Sat — DSA in JS, 4 problems timed (25 min each)
+
+Two pointers / hashmap / strings. Candidates reported: merge intervals, `"1+3-2"` eval (no BODMAS), string dedupe, Valid Sudoku-style. Skip graphs/DP.
+
+### Sun — mock the hour
+
+- 45 min: pick 2 coding problems, share-screen yourself, talk
+- 15 min: walk your last project like a Principal — architecture, bottleneck, what you’d do at Oracle scale (grids, modules, auth)
+- Then stop. Light review Monday morning only.
+
+---
+
+## How to behave on HackerRank
+
+- Restate the problem, 2 examples, edge cases (`[]`, nested empty, duplicates).
+- Brute force first if stuck, then improve.
+- Name time/space.
+- Don’t freeze on syntax; they want the approach.
+
+**Open with (practice this once)**  
+One minute: current product, your piece, one hard problem you owned, result. Then “happy to code or go deep on React — whatever you prefer.”
+
+**Ask them (pick 2)**
+
+- What does this team ship?
+- Biggest UI pain (perf, data grids, legacy)?
+- How is frontend split across modules?
+
+YouTube is backup. **Blank-editor reps** of squash / intersection / debounce / store will decide this round.
+
+---
+
+## DSA level (UI / Principal app)
+
+Rarely Graph/DP unless cloud-infra team. Drill LeetCode Easy/Medium:
+
+- Arrays, strings, HashMaps
+- Sliding window / two pointers
+- Basic recursion
+
+Reported:
+
+- Longest Common Substring, Valid Sudoku, String Deduplication
+- OCI SDE-3 Jun 2025: evaluate `"1+3-2"` (no BODMAS); intersection with dupes `[2,2,4]`; matrix follow-up
+- Palash SDE-3 UI: DSA in JS; circular doubly linked list (time-boxed); Merge Intervals
+- Ankur Sr MTS: arrays + linked lists; later trees/graphs (heavier role)
+
+---
+
+## Resources
+
+- https://www.greatfrontend.com/questions/javascript/squash-object
+- https://www.frontendinterviewhandbook.com/companies/oracle-front-end-interview-questions
+- Guide + YouTube already in `ORACLE-26` and `Random_Pages/linkedin_1.md`

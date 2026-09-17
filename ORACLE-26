@@ -1,0 +1,188 @@
+# Oracle 2026 — Frontend Interview Prep
+
+## Core React Concepts & Hooks
+
+These questions focus on component lifecycles, memory management, and how React manages state under the hood.
+
+- **Explain the rendering lifecycle of a component.** Focus on the difference between initial rendering, re-rendering, and the commit phase.
+- **How does `useEffect` map to class component lifecycles?** Detail how empty dependency arrays match `componentDidMount` and cleanup functions match `componentWillUnmount`.
+- **What is the difference between `useMemo` and `useCallback`?** Explain when to use each to prevent unnecessary child re-renders.
+- **How do you pass data between deeply nested components?** Compare the React Context API against component composition and state management tools like Redux.
+- **Explain the differences between Props and State.** Contrast mutability, pass-direction, and component-bound constraints.
+
+## Machine Coding & Vanilla JavaScript Problems
+
+Oracle front-end interviews heavily feature live JavaScript coding challenges focusing on object and array manipulation.
+
+- **Squash a Nested Object:** Write a utility function to flatten a deeply nested object into a single-level object using dot-separated keys.
+- **Find Common Elements:** Given two arrays (e.g., `arr1 = [1, 2, 2, 4, 5]` and `arr2 = [3, 2, 4, 2]`), return their intersection (`[2, 2, 4]`).
+- **Custom Hook Creation:** Build a robust, reusable custom hook, such as `useFetch` with built-in abort controls, or a `useDebounce` hook for search inputs.
+- **Implement a Polyfill:** Write your own native implementation for common JavaScript methods like `Array.prototype.map`, `filter`, or `Promise.all`.
+
+## Performance Optimization & Architecture
+
+Enterprise applications built at Oracle must process massive data tables, grids, and dashboards efficiently.
+
+- **How do you optimize a long list or grid in React?** Discuss windowing or virtualization using libraries like `react-window` to only render visible DOM nodes.
+- **What triggers a re-render and how do you stop it?** Explain how state updates force recursive component tree rendering and how `React.memo` or clean hook boundaries mitigate this.
+- **Explain Lazy Loading.** Detail how `React.lazy` and `Suspense` split code bundles to drastically speed up initial page load times.
+- **State Batching Mechanics:** Explain how automatic batching works in newer versions of React to reduce multiple state updates into a single render pass.
+
+## General Technical & DSA Expectations
+
+Beyond React, you will face standard computer science questions spanning the web development landscape.
+
+- **Data Structures:** Be ready to code basic algorithms like sorting algorithms, string reversals, or tracking elements using a `HashMap`.
+- **Web Security:** Explain common client-side vulnerabilities, specifically Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF), alongside their mitigation strategies.
+- **System Design Principles:** Design a real-time collaborative dashboard or an infinite-scroll notification system from the ground up, highlighting API schemas and state models.
+
+## What level of DSA should you expect?
+
+For UI roles, they rarely ask hyper-complex Graph or Dynamic Programming problems unless you are applying for heavy graphical cloud-infrastructure teams. Focus your preparation entirely on LeetCode Easy/Medium questions involving:
+
+- Arrays
+- Strings
+- HashMaps
+- Sliding Window / Two Pointers
+- Basic Recursion
+
+For instance, recent front-end candidates have reported being asked variations of:
+
+- Longest Common Substring
+- Valid Sudoku
+- String Deduplication
+
+**Reported in recent loops (2025)**
+
+| Source | Problems |
+|---|---|
+| OCI SDE-3, Jun 2025 | Evaluate `"1+3-2"` (no BODMAS). Intersection with duplicates `[2,2,4]`. Same idea on a **matrix**. |
+| Palash, SDE-3 UI, Jun 2025 | DSA **in JS**. Later: circular doubly linked list (time-boxed). Merge Intervals showed up in his prep/post. |
+| Ankur, Sr MTS, Jul 2025 | Arrays + linked lists (elimination). Later: trees/graphs, recursion, parking-lot LLD. |
+
+**What to drill**
+
+- Arrays, strings, HashMap
+- Two pointers / sliding window
+- Recursion
+- Intersection / squash-object style (JS, but they treat it like DSA)
+
+Skip contest-hard DP and graphs unless the JD is cloud-infra, not a React console.
+
+
+
+
+LINKED POST
+
+https://www.linkedin.com/feed/update/urn:li:activity:7497007199471345664/
+
+🚀 Oracle — Frontend Engineer (React.js) Interview Experience
+Recently interviewed for a Frontend Engineer / React.js role at Oracle.
+This was not a typical “What is React?” interview. The discussion focused heavily on React internals, JavaScript, Redux architecture, performance, debugging, and frontend system design.
+
+🔥 Technical Interview Round 1 — Key Questions
+
+1️⃣ React Architecture
+How would you design a scalable React application with multiple modules, shared state, API integrations, authentication, and reusable components?
+2️⃣ React Internals
+What actually happens when state changes in React? Explain the flow through reconciliation → Fiber → render phase → commit phase → DOM update.
+3️⃣ React Performance
+A page renders thousands of records and becomes slow during filtering and state updates. How would you identify the bottleneck and optimize it?
+4️⃣ Redux Toolkit — Internal Working
+You mentioned Redux Toolkit. Explain the complete flow:
+dispatch → middleware → reducer → store update → subscription → component re-render
+5️⃣ Real-World Redux Design
+For an enterprise application with authentication, user data, filters, pagination, and API data, what should be stored in Redux and what should remain local component state?
+6️⃣ 🔥 Coding Challenge — Build Redux Using JavaScript
+Implement a simplified Redux-like state management system using plain JavaScript with:
+• Store
+• Reducer
+• Dispatch
+• Subscribe
+• State updates
+• Unsubscribe
+Then explain how the implementation maps to the actual Redux architecture.
+7️⃣ JavaScript Deep Dive
+Given synchronous code, Promises, queueMicrotask, setTimeout, and other async operations, predict the exact execution order and explain the event loop.
+8️⃣ API Architecture
+Multiple components request the same API simultaneously. How would you handle request deduplication, caching, cancellation, race conditions, errors, and stale responses?
+9️⃣ Production Debugging
+A React application becomes significantly slower in production. How would you identify the root cause using React profiling and browser debugging tools?
+
+Ans.
+
+**What I’d say**
+
+“First I don’t guess. I check if it’s slow to **load**, slow to **click**, or both. Then I open tools and find the heavy part.”
+
+---
+
+**1. Split the problem**
+- Slow first open / route change → bundle, network, big JS parse
+- Slow after it’s open (type, filter, click) → React re-renders or a long JS task
+- Janky scroll → too many DOM nodes / layout
+
+**2. Chrome Performance (always works in prod)**
+- Record while I do the slow action
+- Look for a long yellow/red bar on the main thread
+- See if it’s Scripting (JS), Rendering, or Painting
+- That tells me: bad JS loop vs React painting a huge tree
+
+**3. Network + Lighthouse**
+- Huge JS chunk? No code-splitting?
+- Same API fired 10 times?
+- Images / fonts blocking?
+- Lighthouse / Web Vitals: LCP, INP — is it load or interaction?
+
+**4. React side**
+- React DevTools **Profiler** on a build that supports profiling (or staging with profiling build)
+- Record the slow click → which components took forever?
+- “Highlight updates” — whole page flashing on one keystroke = state too high / too many children
+- Note: normal production build strips some Profiler detail — so for React-specific dig I use staging or a profiling build. Chrome Performance still works on real prod.
+
+**5. Typical roots I look for**
+- Rendering 5k rows with no virtualization
+- Parent state making the whole tree re-render
+- Giant context value changing every time
+- Huge bundle, no lazy routes
+- Accidental infinite loop / effect refetch storm
+
+**6. Fix only after I see proof**
+- Don’t start with `memo` everywhere
+- Profile → find the fat component or fat network → fix that
+
+**Close**
+“Reproduce → Performance tab for the long task → Network if load → React Profiler for which components → fix the hot spot.”
+
+🔟 Frontend System Design
+Design a large-scale enterprise frontend covering state management, API architecture, authentication, caching, performance, code splitting, observability, and scalability.
+
+💡 Overall Takeaway
+The interview was less about memorizing React concepts and more about:
+“Do you understand what happens underneath React, JavaScript, and Redux — and can you apply that knowledge to production-scale systems?”
+The most interesting part for me was the Redux-from-scratch JavaScript challenge.
+
+Definitely a strong learning experience. 🚀
+
+#ReactJS #FrontendDevelopment #JavaScript #ReduxToolkit #SoftwareEngineering #InterviewExperience #ReactInterview #React.js
+
+
+BUILD A APP like ASSIGNMENT with paktolus
+
+MORE RESOURCES:
+
+- [Oracle Front End Interview Questions — Front End Interview Handbook](https://www.frontendinterviewhandbook.com/companies/oracle-front-end-interview-questions) — OCI India SDE-3, 11 Jun 2025: squash object, array intersection `[2,2,4]`, debug a React app, Jira board, URL shortener
+
+- [Squash Object — GreatFrontEnd](https://www.greatfrontend.com/questions/javascript/squash-object) — practice problem from that loop
+- [Oracle Frontend Interview Experience | Senior Frontend Engineer](https://medium.com/frontend-army/oracle-frontend-interview-experience-senior-frontend-engineer-da1a4b64a0cc) — JS internals, hooks/memo/lazy, polyfills, machine coding
+- [Oracle Frontend Interview Experience | 2026 — On Campus](https://medium.com/frontend-army/oracle-frontend-interview-experience-2026-on-campus-8f198b47ba6e) — on-campus loop (CS + DSA heavy)
+- [Rahul Dwivedi — Principal SE, Oct 2024](https://www.linkedin.com/posts/rahul-dwivedi-67b64167_interview-experience-with-oracle-for-principal-activity-7403355923798294528-B6n5) — closures/promises, live React feature, React+TS HackerRank + tests, custom hooks
+- [Tiasha Bhowmik — Senior SE, Jul 2025](https://www.linkedin.com/posts/tiashabhowmik_fullstack-mern-interviewexperience-activity-7353684762173100034-WQ6Q) — useLocalStorage polyfill, debounce, HOCs, event loop/hoisting/TDZ
+- [Palash Nagwanshi — SDE-3 UI, Jun 2025](https://www.linkedin.com/posts/palash-nagwanshi_merge-intervals-leetcode-activity-7344988757231603712-kJ6s) — event loop, promises, JS output questions, JS-only DSA
+- [Ankur Kesharwani — Sr MTS, Jul 2025](https://www.linkedin.com/posts/kesari007_sponsoredpost-oracle-interviewexperience-activity-7352193005153345536-OFmo) — React internals, hooks, context, event loop + DSA/LLD
+- [Prepfully — Oracle Frontend Engineer 2026](https://prepfully.com/interview-questions/oracle/frontend-engineer) — crowdsourced question bank
+
+
+https://medium.com/frontend-army/oracle-frontend-interview-experience-senior-frontend-engineer-da1a4b64a0cc
+
+

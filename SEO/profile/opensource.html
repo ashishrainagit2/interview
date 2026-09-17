@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Open source &amp; pull requests — Ashish Raina</title>
+  <meta name="description" content="Features and pull requests by Ashish Raina: auth, security, reliability, React features, and collaborative HTML/CSS work." />
+  <link rel="canonical" href="opensource.html" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,560&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="index.html">Ashish Raina<span>Profile</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="opensource.html" aria-current="page">Open source</a>
+        <a href="services.html">Services</a>
+        <a class="btn-nav" href="contact.html">Hire me</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="section wrap">
+    <p class="kicker">PRs and features</p>
+    <h1>How I ship work: small, reviewable pull requests</h1>
+    <p class="lede">Clients care about how you land change. These PRs show auth, security, resilience, and UI features as separate reviews — not a single unreadable commit.</p>
+
+    <div class="filters" data-target=".pr-item" role="group" aria-label="Filter pull requests">
+      <button class="filter is-on" type="button" data-filter="all">All</button>
+      <button class="filter" type="button" data-filter="security">Auth &amp; security</button>
+      <button class="filter" type="button" data-filter="reliability">Reliability</button>
+      <button class="filter" type="button" data-filter="observe">Observability</button>
+      <button class="filter" type="button" data-filter="frontend">Frontend</button>
+    </div>
+
+    <section class="panel" style="margin-bottom:2rem">
+      <h2>Feature themes</h2>
+      <div class="grid-3" style="margin-top:1rem">
+        <div>
+          <h3>Auth that can survive production</h3>
+          <p class="muted">Access + refresh keys, rotation, cookies, logout-all, email verify, SMS, change password.</p>
+        </div>
+        <div>
+          <h3>APIs that fail safely</h3>
+          <p class="muted">Circuit breaker, timeouts, jitter, clustering, health checks, versioning, typed errors.</p>
+        </div>
+        <div>
+          <h3>UI you can review</h3>
+          <p class="muted">React features without Redux, hooks, drag-and-drop, maps, and documented HTML pages.</p>
+        </div>
+      </div>
+    </section>
+
+    <h2>Selected pull requests</h2>
+
+    <div class="pr-item" data-tags="security">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/32">Refresh token rotation</a><div class="muted">todo-nodejs · keeps stolen refresh tokens from living forever</div></div>
+        <span class="chip">Auth</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="security">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/31">Access key and refresh key</a><div class="muted">todo-nodejs · split token responsibilities</div></div>
+        <span class="chip">Auth</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="security">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/33">Logout all sessions</a><div class="muted">todo-nodejs · revoke every device at once</div></div>
+        <span class="chip">Auth</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="security">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/40">Email verification</a><div class="muted">todo-nodejs · account proof before privileged actions</div></div>
+        <span class="chip">Auth</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="security">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/41">SMS feature</a><div class="muted">todo-nodejs · extra channel for account flows</div></div>
+        <span class="chip">Auth</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="security">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/3">Rate limiter</a><div class="muted">todo-nodejs · protect public endpoints from abuse</div></div>
+        <span class="chip">Security</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="security">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/11">Safe headers</a><div class="muted">todo-nodejs · harden HTTP responses</div></div>
+        <span class="chip">Security</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="reliability">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/29">Circuit breaker</a><div class="muted">todo-nodejs · stop cascading failures</div></div>
+        <span class="chip">Resilience</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="reliability">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/25">Timeouts</a><div class="muted">todo-nodejs · bound slow dependencies</div></div>
+        <span class="chip">Resilience</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="reliability">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/18">Node cluster</a><div class="muted">todo-nodejs · use more than one process</div></div>
+        <span class="chip">Scale</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="reliability">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/12">Health check</a><div class="muted">todo-nodejs · ready for load balancers</div></div>
+        <span class="chip">Ops</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="observe">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/23">Correlation ID</a><div class="muted">todo-nodejs · trace one request across logs</div></div>
+        <span class="chip">Logging</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="observe">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/todo-nodejs/pull/24">Pino logging</a><div class="muted">todo-nodejs · structured logs instead of console noise</div></div>
+        <span class="chip">Logging</span>
+        <span class="status">Merged</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="frontend">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/BurgerBuilderApp/pull/1">Burger Builder features without Redux</a><div class="muted">BurgerBuilderApp · prove the UI can live on component state first</div></div>
+        <span class="chip">React</span>
+        <span class="status">PR</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="frontend">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashish-projects/projectHTML/pull/30">Drag and drop</a><div class="muted">projectHTML · interactive HTML feature, reviewed as its own change</div></div>
+        <span class="chip">HTML</span>
+        <span class="status">PR</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="frontend">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashish-projects/projectHTML/pull/28">Canvas page</a><div class="muted">projectHTML · drawing surface as a completed page</div></div>
+        <span class="chip">HTML</span>
+        <span class="status">PR</span>
+      </div>
+    </div>
+    <div class="pr-item" data-tags="frontend">
+      <div class="pr-row">
+        <div><a href="https://github.com/ashishrainagit2/React-Udemy-Maximillan-tutorial/pull/4">Hooks in functional components</a><div class="muted">React tutorial repo · modern React, not class-only demos</div></div>
+        <span class="chip">React</span>
+        <span class="status">PR</span>
+      </div>
+    </div>
+
+    <section class="section" style="padding-left:0;padding-right:0">
+      <h2>Also studying in public</h2>
+      <p class="muted">Forks I keep for learning production codebases — useful when a client asks “have you read real framework source?”</p>
+      <div class="tags" style="margin-top:0.8rem">
+        <a class="tag" href="https://github.com/ashishrainagit2/stagewise">stagewise</a>
+        <a class="tag" href="https://github.com/ashishrainagit2/next.js">next.js</a>
+        <a class="tag" href="https://github.com/ashishrainagit2">full GitHub profile</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>© <span id="year"></span> Ashish Raina</p>
+      <div class="socials">
+        <a href="https://github.com/ashishrainagit2">GitHub</a>
+        <a href="https://www.linkedin.com/in/ashish-raina-software-developer/">LinkedIn</a>
+        <a href="mailto:ashish95614@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+</body>
+</html>

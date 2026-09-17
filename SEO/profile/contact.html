@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Ashish Raina — Hire a software developer</title>
+  <meta name="description" content="Contact Ashish Raina for freelance React work, mentoring, or interview coaching. Email ashish95614@gmail.com." />
+  <link rel="canonical" href="contact.html" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,560&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="index.html">Ashish Raina<span>Profile</span></a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav id="site-nav" class="site-nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="opensource.html">Open source</a>
+        <a href="services.html">Services</a>
+        <a class="btn-nav" href="contact.html" aria-current="page">Hire me</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="section wrap">
+    <p class="kicker">Let’s talk</p>
+    <h1>Tell me what you need</h1>
+    <p class="lede">I read every message. Include a URL, a deadline, and the outcome you want. Direct email always works: <a href="mailto:ashish95614@gmail.com">ashish95614@gmail.com</a>.</p>
+
+    <div class="grid-2" style="margin-top:2rem">
+      <form class="panel form" id="hire-form" novalidate>
+        <div id="form-alert" class="alert" role="status"></div>
+        <label>Name
+          <input name="name" type="text" autocomplete="name" required />
+        </label>
+        <label>Email
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+        <label>Company or product
+          <input name="company" type="text" autocomplete="organization" />
+        </label>
+        <label>Service
+          <select name="service" id="service" required>
+            <option value="">Choose one</option>
+            <option value="Freelance">Freelance</option>
+            <option value="Mentoring">One-on-one mentoring</option>
+            <option value="Interview coaching">Interview coaching</option>
+            <option value="Something else">Something else</option>
+          </select>
+        </label>
+        <label>Budget range
+          <select name="budget">
+            <option value="">Optional</option>
+            <option>Under ₹50,000</option>
+            <option>₹50,000 – ₹2 lakh</option>
+            <option>₹2 lakh – ₹8 lakh</option>
+            <option>Retainer / hourly</option>
+            <option>Mentoring session pack</option>
+          </select>
+        </label>
+        <label>What should be true when we are done?
+          <textarea name="message" required placeholder="Example: our product pages should index in Google, LCP under 2.5s, and a React engineer on your team can maintain the PR."></textarea>
+        </label>
+        <button class="btn" type="submit">Draft email to Ashish</button>
+        <p class="form-note">This site has no backend. Submit opens your email app with the message filled in. Nothing is stored here.</p>
+      </form>
+
+      <aside>
+        <article class="panel">
+          <h2>Direct channels</h2>
+          <p><a href="mailto:ashish95614@gmail.com">ashish95614@gmail.com</a></p>
+          <p><a href="https://github.com/ashishrainagit2">GitHub</a></p>
+          <p><a href="https://www.linkedin.com/in/ashish-raina-software-developer/">LinkedIn</a></p>
+          <p class="muted">Bengaluru, India · English and Hindi</p>
+        </article>
+        <article class="panel" style="margin-top:1rem">
+          <h2>What to send</h2>
+          <p class="muted">A repo or live URL, the user-facing problem, and whether you want a builder, a mentor, or interview practice. I will reply with yes / not a fit / a clarifying question.</p>
+        </article>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>© <span id="year"></span> Ashish Raina</p>
+      <div class="socials">
+        <a href="https://github.com/ashishrainagit2">GitHub</a>
+        <a href="https://www.linkedin.com/in/ashish-raina-software-developer/">LinkedIn</a>
+        <a href="mailto:ashish95614@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+  <script src="js/contact.js"></script>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var service = params.get("service");
+      var select = document.getElementById("service");
+      if (service && select) {
+        for (var i = 0; i < select.options.length; i++) {
+          if (select.options[i].value === service) select.selectedIndex = i;
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

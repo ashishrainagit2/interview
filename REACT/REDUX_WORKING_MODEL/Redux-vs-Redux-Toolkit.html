@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redux vs Redux Toolkit</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface-2: #242836;
+      --border: #2e3344;
+      --text: #e8eaef;
+      --muted: #9aa3b5;
+      --vanilla: #764abc;
+      --vanilla-glow: rgba(118, 74, 188, 0.35);
+      --toolkit: #e87528;
+      --toolkit-glow: rgba(232, 117, 40, 0.35);
+      --shared: #3ecf8e;
+      --shared-glow: rgba(62, 207, 142, 0.3);
+      --code-bg: #12151c;
+      --radius: 14px;
+      --font: "Segoe UI", system-ui, -apple-system, sans-serif;
+      --mono: "Cascadia Code", "Fira Code", Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* subtle grid background */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    header p {
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto 24px;
+      font-size: 1.05rem;
+    }
+
+    .badges {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+    }
+
+    .badge.vanilla { color: #c4a8ff; border-color: var(--vanilla); background: rgba(118,74,188,0.12); }
+    .badge.toolkit { color: #ffb07a; border-color: var(--toolkit); background: rgba(232,117,40,0.12); }
+    .badge.shared  { color: #7eebb5; border-color: var(--shared);  background: rgba(62,207,142,0.12); }
+
+    /* ── animated flow diagram ── */
+    .flow-section {
+      margin-bottom: 56px;
+    }
+
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: 650;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+    }
+
+    .flow-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .flow-tab {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.25s;
+    }
+
+    .flow-tab.active-vanilla {
+      color: #c4a8ff;
+      border-color: var(--vanilla);
+      background: rgba(118,74,188,0.15);
+    }
+
+    .flow-tab.active-toolkit {
+      color: #ffb07a;
+      border-color: var(--toolkit);
+      background: rgba(232,117,40,0.15);
+    }
+
+    .flow-panel { display: none; }
+    .flow-panel.visible { display: block; }
+
+    .flow-diagram {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      overflow-x: auto;
+    }
+
+    .flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: nowrap;
+      min-width: 700px;
+    }
+
+    .flow-node {
+      position: relative;
+      background: var(--surface-2);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      text-align: center;
+      min-width: 108px;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    }
+
+    .flow-node .label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .flow-node .name {
+      font-size: 0.88rem;
+      font-weight: 650;
+      font-family: var(--mono);
+    }
+
+    .flow-node .detail {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+
+    .flow-node.active-vanilla {
+      border-color: var(--vanilla);
+      box-shadow: 0 0 24px var(--vanilla-glow);
+      transform: scale(1.05);
+    }
+
+    .flow-node.active-toolkit {
+      border-color: var(--toolkit);
+      box-shadow: 0 0 24px var(--toolkit-glow);
+      transform: scale(1.05);
+    }
+
+    .flow-node.active-shared {
+      border-color: var(--shared);
+      box-shadow: 0 0 24px var(--shared-glow);
+      transform: scale(1.05);
+    }
+
+    /* animated arrow connector */
+    .flow-arrow {
+      position: relative;
+      width: 56px;
+      height: 2px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .flow-arrow::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-left-color: var(--border);
+    }
+
+    .flow-arrow .pulse {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+
+    .flow-arrow.active-vanilla .pulse {
+      background: var(--vanilla);
+      animation: travel 1.8s ease-in-out infinite;
+    }
+
+    .flow-arrow.active-toolkit .pulse {
+      background: var(--toolkit);
+      animation: travel 1.8s ease-in-out infinite;
+    }
+
+    .flow-arrow.active-shared .pulse {
+      background: var(--shared);
+      animation: travel 1.8s ease-in-out infinite;
+    }
+
+    @keyframes travel {
+      0%   { left: 0;   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { left: 100%; opacity: 0; }
+    }
+
+    /* stagger node highlights per step */
+    .flow-panel[data-step="0"] .node-0 { animation: highlight-vanilla 1.8s ease-in-out infinite; }
+    .flow-panel[data-step="0"] .arrow-0 .pulse { animation-delay: 0s; }
+    .flow-panel[data-step="1"] .node-1 { animation: highlight-vanilla 1.8s 0.3s ease-in-out infinite; }
+    .flow-panel[data-step="1"] .arrow-1 .pulse { animation-delay: 0.3s; }
+    /* use JS to cycle steps instead — simpler: animate all arrows with delays */
+
+    .vanilla-flow .flow-arrow:nth-child(2) .pulse { animation-delay: 0s; }
+    .vanilla-flow .flow-arrow:nth-child(4) .pulse { animation-delay: 0.35s; }
+    .vanilla-flow .flow-arrow:nth-child(6) .pulse { animation-delay: 0.7s; }
+    .vanilla-flow .flow-arrow:nth-child(8) .pulse { animation-delay: 1.05s; }
+    .vanilla-flow .flow-arrow:nth-child(10) .pulse { animation-delay: 1.4s; }
+
+    .toolkit-flow .flow-arrow:nth-child(2) .pulse { animation-delay: 0s; }
+    .toolkit-flow .flow-arrow:nth-child(4) .pulse { animation-delay: 0.35s; }
+    .toolkit-flow .flow-arrow:nth-child(6) .pulse { animation-delay: 0.7s; }
+    .toolkit-flow .flow-arrow:nth-child(8) .pulse { animation-delay: 1.05s; }
+    .toolkit-flow .flow-arrow:nth-child(10) .pulse { animation-delay: 1.4s; }
+
+    .vanilla-flow .flow-arrow .pulse { background: var(--vanilla); }
+    .toolkit-flow .flow-arrow .pulse { background: var(--toolkit); }
+
+    .vanilla-flow .flow-arrow.active-vanilla .pulse,
+    .toolkit-flow .flow-arrow.active-toolkit .pulse {
+      opacity: 1;
+      animation: travel 1.8s ease-in-out infinite;
+    }
+
+    /* cycle node glow */
+    @keyframes glow-vanilla {
+      0%, 100% { border-color: var(--border); box-shadow: none; transform: scale(1); }
+      15%, 35% { border-color: var(--vanilla); box-shadow: 0 0 20px var(--vanilla-glow); transform: scale(1.04); }
+    }
+
+    @keyframes glow-toolkit {
+      0%, 100% { border-color: var(--border); box-shadow: none; transform: scale(1); }
+      15%, 35% { border-color: var(--toolkit); box-shadow: 0 0 20px var(--toolkit-glow); transform: scale(1.04); }
+    }
+
+    @keyframes glow-shared {
+      0%, 100% { border-color: var(--border); box-shadow: none; transform: scale(1); }
+      15%, 35% { border-color: var(--shared); box-shadow: 0 0 20px var(--shared-glow); transform: scale(1.04); }
+    }
+
+    .vanilla-flow .flow-node:nth-child(1)  { animation: glow-vanilla 9s 0s infinite; }
+    .vanilla-flow .flow-node:nth-child(3)  { animation: glow-vanilla 9s 1.8s infinite; }
+    .vanilla-flow .flow-node:nth-child(5)  { animation: glow-vanilla 9s 3.6s infinite; }
+    .vanilla-flow .flow-node:nth-child(7)  { animation: glow-vanilla 9s 5.4s infinite; }
+    .vanilla-flow .flow-node:nth-child(9)  { animation: glow-vanilla 9s 7.2s infinite; }
+    .vanilla-flow .flow-node:nth-child(11) { animation: glow-shared 9s 0.9s infinite; }
+
+    .toolkit-flow .flow-node:nth-child(1)  { animation: glow-toolkit 9s 0s infinite; }
+    .toolkit-flow .flow-node:nth-child(3)  { animation: glow-toolkit 9s 1.8s infinite; }
+    .toolkit-flow .flow-node:nth-child(5)  { animation: glow-toolkit 9s 3.6s infinite; }
+    .toolkit-flow .flow-node:nth-child(7)  { animation: glow-toolkit 9s 5.4s infinite; }
+    .toolkit-flow .flow-node:nth-child(9)  { animation: glow-toolkit 9s 7.2s infinite; }
+    .toolkit-flow .flow-node:nth-child(11) { animation: glow-shared 9s 0.9s infinite; }
+
+    .flow-legend {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+    }
+
+    .flow-legend span { display: flex; align-items: center; gap: 6px; }
+    .flow-legend .swatch { width: 12px; height: 12px; border-radius: 3px; }
+
+    /* ── side-by-side cards ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 56px;
+    }
+
+    @media (max-width: 860px) {
+      .compare-grid { grid-template-columns: 1fr; }
+      .flow-row { min-width: unset; flex-wrap: wrap; justify-content: center; gap: 12px; }
+      .flow-arrow { width: 2px; height: 32px; }
+      .flow-arrow::after {
+        right: 50%; top: auto; bottom: -1px;
+        transform: translateX(50%);
+        border: 5px solid transparent;
+        border-top-color: var(--border);
+        border-left-color: transparent;
+      }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-header.vanilla { border-top: 3px solid var(--vanilla); }
+    .card-header.toolkit { border-top: 3px solid var(--toolkit); }
+
+    .card-header h2 { font-size: 1.1rem; font-weight: 650; }
+    .card-header .pkg { font-size: 0.78rem; color: var(--muted); font-family: var(--mono); }
+
+    .card-body { padding: 22px; }
+
+    /* file tree */
+    .file-tree {
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.9;
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 18px;
+    }
+
+    .file-tree .folder { color: var(--muted); }
+    .file-tree .file-vanilla { color: #c4a8ff; }
+    .file-tree .file-toolkit { color: #ffb07a; }
+    .file-tree .comment { color: #5a6278; font-style: italic; }
+
+    /* comparison rows */
+    .compare-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 8px 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.88rem;
+    }
+
+    .compare-row:last-child { border-bottom: none; }
+    .compare-row .key { color: var(--muted); font-weight: 600; font-size: 0.8rem; }
+    .compare-row .val { font-family: var(--mono); font-size: 0.8rem; word-break: break-word; }
+
+    /* code blocks */
+    pre {
+      background: var(--code-bg);
+      border-radius: 10px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.7;
+      margin-top: 12px;
+    }
+
+    .kw  { color: #c792ea; }
+    .fn  { color: #82aaff; }
+    .str { color: #c3e88d; }
+    .cm  { color: #5a6278; font-style: italic; }
+    .prop { color: #f78c6c; }
+
+    /* summary table */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-bottom: 56px;
+    }
+
+    .summary-table th,
+    .summary-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-table th {
+      background: var(--surface-2);
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .summary-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .tag.v { background: rgba(118,74,188,0.2); color: #c4a8ff; }
+    .tag.t { background: rgba(232,117,40,0.2); color: #ffb07a; }
+    .tag.s { background: rgba(62,207,142,0.2); color: #7eebb5; }
+
+    /* architecture diagram */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      align-items: stretch;
+      margin-bottom: 56px;
+    }
+
+    @media (max-width: 860px) {
+      .arch-grid { grid-template-columns: 1fr; gap: 16px; }
+      .arch-divider { display: none; }
+    }
+
+    .arch-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .arch-box h3 {
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .arch-box.vanilla h3 { color: #c4a8ff; }
+    .arch-box.toolkit h3 { color: #ffb07a; }
+
+    .arch-layer {
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      font-size: 0.82rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .arch-layer:last-child { margin-bottom: 0; }
+
+    .arch-layer .layer-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .arch-layer .items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .arch-chip {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+    }
+
+    .arch-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 1.4rem;
+      font-weight: 300;
+    }
+
+    .arch-shared {
+      grid-column: 1 / -1;
+      background: rgba(62,207,142,0.06);
+      border: 1px solid rgba(62,207,142,0.25);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .arch-shared .layer-label { color: var(--shared); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .arch-shared .items { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    /* commands */
+    .commands {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 700px) { .commands { grid-template-columns: 1fr; } }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <header>
+      <h1>Redux vs Redux Toolkit</h1>
+      <p>Same data flow. Same React hooks. Different amount of boilerplate.</p>
+      <div class="badges">
+        <span class="badge vanilla">Vanilla — redux-react-demo</span>
+        <span class="badge toolkit">Toolkit — redux-react-demo-with-toolkit</span>
+        <span class="badge shared">Shared — useSelector · useDispatch · Provider</span>
+      </div>
+    </header>
+
+    <!-- ═══ ANIMATED FLOW ═══ -->
+    <section class="flow-section">
+      <div class="section-title"><span class="dot" style="background:var(--shared)"></span> Animated Data Flow</div>
+      <p class="section-sub">Watch the pulse travel — both methods follow the exact same path in React.</p>
+
+      <div class="flow-tabs">
+        <button class="flow-tab active-vanilla" data-target="vanilla">Vanilla Redux</button>
+        <button class="flow-tab" data-target="toolkit">Redux Toolkit</button>
+      </div>
+
+      <!-- Vanilla flow -->
+      <div class="flow-panel visible" id="panel-vanilla">
+        <div class="flow-diagram">
+          <div class="flow-row vanilla-flow">
+            <div class="flow-node">
+              <div class="label">React UI</div>
+              <div class="name">Counter.jsx</div>
+              <div class="detail">button click</div>
+            </div>
+            <div class="flow-arrow active-vanilla"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Hook</div>
+              <div class="name">dispatch()</div>
+              <div class="detail">useDispatch</div>
+            </div>
+            <div class="flow-arrow active-vanilla"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Action</div>
+              <div class="name">increment()</div>
+              <div class="detail">counterActions.js</div>
+            </div>
+            <div class="flow-arrow active-vanilla"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Reducer</div>
+              <div class="name">counterReducer</div>
+              <div class="detail">switch + spread</div>
+            </div>
+            <div class="flow-arrow active-vanilla"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Store</div>
+              <div class="name">createStore</div>
+              <div class="detail">new state</div>
+            </div>
+            <div class="flow-arrow active-vanilla"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Hook</div>
+              <div class="name">useSelector</div>
+              <div class="detail">re-render</div>
+            </div>
+          </div>
+          <div class="flow-legend">
+            <span><span class="swatch" style="background:var(--vanilla)"></span> Vanilla-specific step</span>
+            <span><span class="swatch" style="background:var(--shared)"></span> Same in both projects</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Toolkit flow -->
+      <div class="flow-panel" id="panel-toolkit">
+        <div class="flow-diagram">
+          <div class="flow-row toolkit-flow">
+            <div class="flow-node">
+              <div class="label">React UI</div>
+              <div class="name">Counter.jsx</div>
+              <div class="detail">button click</div>
+            </div>
+            <div class="flow-arrow active-toolkit"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Hook</div>
+              <div class="name">dispatch()</div>
+              <div class="detail">useDispatch</div>
+            </div>
+            <div class="flow-arrow active-toolkit"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Action</div>
+              <div class="name">increment()</div>
+              <div class="detail">from counterSlice</div>
+            </div>
+            <div class="flow-arrow active-toolkit"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Reducer</div>
+              <div class="name">counterSlice</div>
+              <div class="detail">Immer — state.value++</div>
+            </div>
+            <div class="flow-arrow active-toolkit"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Store</div>
+              <div class="name">configureStore</div>
+              <div class="detail">new state</div>
+            </div>
+            <div class="flow-arrow active-toolkit"><div class="pulse"></div></div>
+            <div class="flow-node">
+              <div class="label">Hook</div>
+              <div class="name">useSelector</div>
+              <div class="detail">re-render</div>
+            </div>
+          </div>
+          <div class="flow-legend">
+            <span><span class="swatch" style="background:var(--toolkit)"></span> Toolkit-specific step</span>
+            <span><span class="swatch" style="background:var(--shared)"></span> Same in both projects</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ ARCHITECTURE LAYERS ═══ -->
+    <section class="flow-section">
+      <div class="section-title"><span class="dot" style="background:var(--vanilla)"></span> Architecture — Where Code Lives</div>
+      <p class="section-sub">Vanilla splits actions and reducers. Toolkit bundles them into slices.</p>
+
+      <div class="arch-grid">
+        <div class="arch-box vanilla">
+          <h3>Vanilla Redux</h3>
+          <div class="arch-layer">
+            <div class="layer-label">Per feature (×2 files)</div>
+            <div class="items">
+              <span class="arch-chip">counterActions.js</span>
+              <span class="arch-chip">counterReducer.js</span>
+              <span class="arch-chip">greetingActions.js</span>
+              <span class="arch-chip">greetingReducer.js</span>
+            </div>
+          </div>
+          <div class="arch-layer">
+            <div class="layer-label">Store</div>
+            <div class="items">
+              <span class="arch-chip">combineReducers()</span>
+              <span class="arch-chip">createStore()</span>
+              <span class="arch-chip">DevTools enhancer</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-divider">vs</div>
+
+        <div class="arch-box toolkit">
+          <h3>Redux Toolkit</h3>
+          <div class="arch-layer">
+            <div class="layer-label">Per feature (×1 file)</div>
+            <div class="items">
+              <span class="arch-chip">counterSlice.js</span>
+              <span class="arch-chip">greetingSlice.js</span>
+            </div>
+          </div>
+          <div class="arch-layer">
+            <div class="layer-label">Store</div>
+            <div class="items">
+              <span class="arch-chip">configureStore()</span>
+              <span class="arch-chip">DevTools built-in</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-shared">
+          <div class="layer-label">Identical in both projects</div>
+          <div class="items">
+            <span class="arch-chip">main.jsx → Provider</span>
+            <span class="arch-chip">useSelector</span>
+            <span class="arch-chip">useDispatch</span>
+            <span class="arch-chip">state.counter.value</span>
+            <span class="arch-chip">state.greeting.name</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SIDE BY SIDE CARDS ═══ -->
+    <section class="flow-section">
+      <div class="section-title"><span class="dot" style="background:var(--toolkit)"></span> Feature Comparison</div>
+      <p class="section-sub">Greeting feature — same behaviour, different files.</p>
+
+      <div class="compare-grid">
+        <div class="card">
+          <div class="card-header vanilla">
+            <div>
+              <h2>Vanilla Redux</h2>
+              <div class="pkg">redux + react-redux</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="file-tree">
+              <div><span class="folder">redux/</span></div>
+              <div>&nbsp;&nbsp;<span class="file-vanilla">greetingActions.js</span> <span class="comment">← you write types + creators</span></div>
+              <div>&nbsp;&nbsp;<span class="file-vanilla">greetingReducer.js</span> <span class="comment">← switch/case reducer</span></div>
+              <div>&nbsp;&nbsp;<span class="file-vanilla">store.js</span></div>
+            </div>
+            <div class="compare-row"><span class="key">Action type</span><span class="val">'greeting/SET_NAME'</span></div>
+            <div class="compare-row"><span class="key">Update state</span><span class="val">{ ...state, name: payload }</span></div>
+            <div class="compare-row"><span class="key">Import in UI</span><span class="val">from '../redux/greetingActions'</span></div>
+            <pre><span class="cm">// greetingActions.js</span>
+<span class="kw">export const</span> <span class="prop">SET_NAME</span> = <span class="str">'greeting/SET_NAME'</span>
+<span class="kw">export const</span> <span class="fn">setName</span> = (name) => ({
+  type: <span class="prop">SET_NAME</span>, payload: name
+})</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header toolkit">
+            <div>
+              <h2>Redux Toolkit</h2>
+              <div class="pkg">@reduxjs/toolkit + react-redux</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="file-tree">
+              <div><span class="folder">redux/</span></div>
+              <div>&nbsp;&nbsp;<span class="file-toolkit">greetingSlice.js</span> <span class="comment">← all-in-one</span></div>
+              <div>&nbsp;&nbsp;<span class="file-toolkit">store.js</span></div>
+            </div>
+            <div class="compare-row"><span class="key">Action type</span><span class="val">'greeting/setName' (auto)</span></div>
+            <div class="compare-row"><span class="key">Update state</span><span class="val">state.name = payload</span></div>
+            <div class="compare-row"><span class="key">Import in UI</span><span class="val">from '../redux/greetingSlice'</span></div>
+            <pre><span class="cm">// greetingSlice.js</span>
+<span class="kw">const</span> slice = <span class="fn">createSlice</span>({
+  name: <span class="str">'greeting'</span>,
+  initialState: { name: <span class="str">'World'</span> },
+  reducers: {
+    <span class="fn">setName</span>: (state, action) => {
+      state.name = action.payload
+    }
+  }
+})
+<span class="kw">export const</span> { <span class="fn">setName</span> } = slice.actions</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SUMMARY TABLE ═══ -->
+    <section class="flow-section">
+      <div class="section-title"><span class="dot" style="background:var(--shared)"></span> Quick Reference</div>
+      <p class="section-sub"></p>
+
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Topic</th>
+            <th>Vanilla Redux</th>
+            <th>Redux Toolkit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Feature files</td>
+            <td><span class="tag v">actions.js + reducer.js</span></td>
+            <td><span class="tag t">one slice.js</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Initial state</td>
+            <td>Inside reducer file</td>
+            <td>Inside createSlice</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Action types</td>
+            <td>Manual string you write</td>
+            <td>Auto-generated</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Action creators</td>
+            <td>Manual in actions file</td>
+            <td>Exported from slice.actions</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Reducer style</td>
+            <td>switch + immutable spread</td>
+            <td>object + Immer (direct assign)</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Store setup</td>
+            <td>createStore + combineReducers</td>
+            <td>configureStore</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>DevTools</td>
+            <td>Manual enhancer</td>
+            <td>Built-in</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>main.jsx Provider</td>
+            <td><span class="tag s">Same</span></td>
+            <td><span class="tag s">Same</span></td>
+          </tr>
+          <tr>
+            <td>9</td>
+            <td>useSelector / useDispatch</td>
+            <td><span class="tag s">Same</span></td>
+            <td><span class="tag s">Same</span></td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>State shape</td>
+            <td><span class="tag s">Same</span></td>
+            <td><span class="tag s">Same</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══ COMMANDS ═══ -->
+    <section class="flow-section">
+      <div class="section-title"><span class="dot" style="background:var(--muted)"></span> Terminal Commands</div>
+      <div class="commands">
+        <div class="card">
+          <div class="card-header vanilla"><h2>Vanilla Redux</h2></div>
+          <div class="card-body">
+            <pre>npm create vite@latest redux-react-demo -- --template react
+cd redux-react-demo
+npm install
+npm install redux react-redux
+npm run dev</pre>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header toolkit"><h2>Redux Toolkit</h2></div>
+          <div class="card-body">
+            <pre>npm create vite@latest redux-react-demo-with-toolkit -- --template react
+cd redux-react-demo-with-toolkit
+npm install
+npm install @reduxjs/toolkit react-redux
+npm run dev</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Open this file in any browser — animations loop automatically.<br />
+      Projects: redux-react-demo &nbsp;|&nbsp; redux-react-demo-with-toolkit
+    </footer>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.flow-tab');
+    const panels = {
+      vanilla: document.getElementById('panel-vanilla'),
+      toolkit: document.getElementById('panel-toolkit'),
+    };
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.target;
+        tabs.forEach((t) => {
+          t.classList.remove('active-vanilla', 'active-toolkit');
+        });
+        tab.classList.add(target === 'vanilla' ? 'active-vanilla' : 'active-toolkit');
+        Object.values(panels).forEach((p) => p.classList.remove('visible'));
+        panels[target].classList.add('visible');
+      });
+    });
+  </script>
+</body>
+</html>

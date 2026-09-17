@@ -1,0 +1,365 @@
+# Node.js + MongoDB Interview Notes
+
+FROM AI
+
+## Questions asked
+1. What security practices do you follow in Node.js?
+2. What is libuv in Node.js?
+3. Explain Node.js architecture.
+4. What is aggregation in MongoDB?
+5. What is `$lookup` in MongoDB?
+6. What are different types of rate limiting?
+
+---
+
+## Q1) What security practices do you follow in Node.js?
+
+### Answer
+Never trust client input. Protect secrets, use HTTPS, harden headers, rate-limit sensitive routes, and keep dependencies updated.
+
+### Checklist
+
+| Practice | What to do | Why |
+| :------- | :--------- | :-- |
+| Input validation | Validate/sanitize body, query, params | Stops injection & bad payloads |
+| Auth | JWT or `HttpOnly` cookies + bcrypt/argon2 | Protects accounts |
+| Secrets | Env vars / secret manager, never commit `.env` | Prevents credential leaks |
+| HTTPS / TLS | Force HTTPS in production | Encrypts traffic |
+| Helmet | Secure HTTP headers | Helps against XSS/clickjacking |
+| Rate limiting | Limit login/API abuse | Stops brute force / DoS |
+| CORS | Allow only trusted origins | Blocks unwanted browsers calls |
+| Dependencies | `npm audit`, update packages | Avoid known CVEs |
+| Least privilege | Minimal DB/OS permissions | Limits damage if hacked |
+| Errors | No stack traces to clients in prod | Hides internals |
+| Uploads | Check type/size; store safely | Prevents malware/RCE |
+| Dangerous APIs | Avoid `eval`, unsafe `child_process` | Prevents code injection |
+
+### Request security flow
+
+```text
+Client
+  -> HTTPS
+  -> Helmet + CORS + Rate limit
+  -> Auth
+  -> Validate input
+  -> App + DB (least privilege)
+  -> Safe response (no secrets)
+```
+
+### One-liner
+> Validate input, hide secrets, HTTPS + Helmet, rate-limit auth, patch dependencies.
+
+---
+
+## Q2) What is libuv in Node.js?
+
+### Answer
+**libuv** is a C library used by Node for the **event loop** and **async I/O**.  
+JavaScript runs on one main thread; libuv handles waiting on I/O efficiently.
+
+### What libuv does
+
+| Part | Role | Examples |
+| :--- | :--- | :------- |
+| Event loop | Schedules callbacks when work is ready | timers, I/O callbacks, `setImmediate` |
+| Async network I/O | Non-blocking sockets via OS APIs | TCP/HTTP (epoll/kqueue/IOCP) |
+| Thread pool | Offloads some blocking work | `fs`, `dns.lookup`, some `crypto`/`zlib` |
+| Timers / signals | OS-level async primitives | `setTimeout` support under the hood |
+
+### Important correction (interview favorite)
+- **Network I/O** → usually non-blocking OS APIs (not thread pool)
+- **File system / dns.lookup / some crypto** → often **thread pool** (default size 4)
+- JS callbacks still run on the **main thread**
+
+### Diagram
+
+```text
+Your JS code
+     |
+     v
+   V8 (runs JavaScript)
+     |
+     v
+   libuv
+    / \
+   /   \
+Event   Thread Pool
+Loop    (fs, dns.lookup, crypto...)
+   |
+   +-- Network I/O (non-blocking OS)
+   |
+   v
+Callback queued -> runs on main thread
+```
+
+### One-liner
+> libuv powers Node's event loop and async I/O; some blocking tasks use its thread pool, then callbacks return to the main thread.
+
+---
+
+## Q3) Explain Node.js architecture.
+
+### Answer
+Node is a **single-threaded, event-driven** runtime:  
+**V8** executes JS, **libuv** handles async I/O, and **Node APIs** (`fs`, `http`, etc.) expose that to your app.
+
+### Layers
+
+```text
++----------------------------------+
+| Your App (Express/Nest/JS)       |
++----------------------------------+
+| Node.js APIs (http, fs, path...) |
++----------------------------------+
+| V8 Engine (execute JS)           |
++----------------------------------+
+| libuv (event loop + async I/O)   |
++----------------------------------+
+| Operating System                 |
++----------------------------------+
+```
+
+### Request flow
+
+```text
+1. Request comes in
+2. Node starts async I/O via libuv (non-blocking)
+3. Main thread keeps serving other work
+4. I/O finishes -> callback queued
+5. Event loop runs callback
+6. Response sent
+```
+
+### Key traits
+
+| Trait | Meaning |
+| :---- | :------ |
+| Single-threaded JS | One main call stack for JS |
+| Event-driven | Work continues via callbacks/promises |
+| Non-blocking I/O | Don't idle waiting for disk/network |
+| Best for | APIs, realtime chat, I/O-heavy apps |
+| Weak for heavy CPU | Use `worker_threads` or another service |
+
+### One-liner
+> Node = V8 + libuv + Node APIs; one JS thread handles many connections through non-blocking I/O and the event loop.
+
+---
+
+## Q4) What is aggregation in MongoDB?
+
+### Answer
+**Aggregation** processes documents through a **pipeline of stages** (like an assembly line) to filter, group, sort, and reshape data.
+
+Compared to SQL: mix of `WHERE` + `GROUP BY` + `JOIN` + transforms, written as stages.
+
+### Pipeline
+
+```text
+Documents
+   -> $match   (filter)
+   -> $group   (sum/avg/count)
+   -> $sort    (order)
+   -> $project (shape fields)
+   -> Result
+```
+
+### Common stages
+
+| Stage | Job | SQL-ish idea |
+| :---- | :-- | :----------- |
+| `$match` | Filter docs | `WHERE` |
+| `$group` | Group + accumulators | `GROUP BY` |
+| `$sort` | Sort | `ORDER BY` |
+| `$project` | Pick/rename/compute fields | `SELECT` |
+| `$limit` / `$skip` | Pagination | `LIMIT/OFFSET` |
+| `$unwind` | Split array into docs | — |
+| `$lookup` | Join collections | `LEFT JOIN` |
+| `$addFields` | Add computed fields | — |
+
+### Example
+
+```js
+db.orders.aggregate([
+  { $match: { status: "paid" } },
+  {
+    $group: {
+      _id: "$userId",
+      totalSpent: { $sum: "$amount" },
+      orders: { $sum: 1 }
+    }
+  },
+  { $sort: { totalSpent: -1 } },
+  { $limit: 10 }
+]);
+```
+
+**Meaning:** paid orders → group by user → totals → top 10 spenders.
+
+### Tip
+Put `$match` early to reduce documents before heavy stages.
+
+### One-liner
+> Aggregation = multi-stage pipeline (`$match` → `$group` → `$sort`...) for analytics-style queries.
+
+---
+
+## Q5) What is `$lookup` in MongoDB?
+
+### Answer
+**`$lookup`** joins another collection inside an aggregation pipeline.  
+Behavior is like SQL **LEFT OUTER JOIN**.
+
+### Diagram
+
+```text
+orders                         users
+-----------------              --------------------
+useruserId: 1                    _id: 1
+amount: 500                    name: "Ashish"
+
+After $lookup:
+{
+  userId: 1,
+  amount: 500,
+  userInfo: [{ _id: 1, name: "Ashish" }]
+}
+```
+
+### Syntax
+
+```js
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "users",        // target collection
+      localField: "userId", // field in orders
+      foreignField: "_id",  // field in users
+      as: "userInfo"        // output array name
+    }
+  }
+]);
+```
+
+### Fields
+
+| Field | Meaning |
+| :---- | :------ |
+| `from` | Collection to join |
+| `localField` | Field in current collection |
+| `foreignField` | Matching field in `from` |
+| `as` | Result array field name |
+
+### Must remember
+- `$lookup` result is always an **array**
+- No match → `[]` (left join)
+- Use `$unwind` if you want one object instead of array
+- Index join fields for performance
+- Type must match (`ObjectId` vs string mismatches are common bugs)
+
+### Optional `$unwind`
+
+```js
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "users",
+      localField: "userId",
+      foreignField: "_id",
+      as: "userInfo"
+    }
+  },
+  {
+    $unwind: {
+      path: "$userInfo",
+      preserveNullAndEmptyArrays: true
+    }
+  }
+]);
+```
+
+### One-liner
+> `$lookup` is MongoDB's aggregation join (LEFT JOIN); matches land in an array field named by `as`.
+
+---
+
+## Q6) What are different types of rate limiting?
+
+### Answer
+Rate limiting controls **how many requests** a client can make in a time window.  
+Used to stop brute force, spam, and DoS-style abuse.
+
+### A) Algorithm types
+
+| Type | How it works | Pros | Cons |
+| :--- | :----------- | :--- | :--- |
+| **Fixed window** | Allow N requests per fixed period (e.g. 100/min) | Simple | Burst at window edges |
+| **Sliding window** | Smooth count over rolling time window | Fairer than fixed | Slightly more complex |
+| **Sliding window log** | Store timestamps of each request | Very accurate | More memory |
+| **Token bucket** | Bucket refills tokens over time; each request spends 1 | Allows controlled bursts | Need tuning |
+| **Leaky bucket** | Requests drain at constant rate | Smooth traffic | Bursts get queued/dropped |
+
+### Diagrams
+
+**Fixed window**
+```text
+|---- 1 minute ----|---- 1 minute ----|
+ 100 requests max    100 requests max
+ (counter resets at boundary)
+```
+
+**Token bucket**
+```text
+Tokens refill over time
+[oooo..]  -> request uses a token
+If no token left -> reject (429)
+```
+
+### B) What you rate-limit by (scope)
+
+| Scope | Example |
+| :---- | :------ |
+| IP address | 100 req/min per IP |
+| User ID | 20 actions/min per logged-in user |
+| API key | Plan-based quotas |
+| Route/endpoint | Login: 5/min; search: 60/min |
+| Global | Protect whole service capacity |
+
+### C) Common HTTP behavior
+- Reject with **`429 Too Many Requests`**
+- Often send headers like:
+  - `Retry-After`
+  - `X-RateLimit-Limit`
+  - `X-RateLimit-Remaining`
+  - `X-RateLimit-Reset`
+
+### Practical Node example idea
+- Login route: **strict** (fixed/sliding window, low limit)
+- Public API: **token bucket** (allow small bursts)
+- Store counters in **Redis** for multi-server apps
+
+### One-liner
+> Rate limiting algorithms: fixed window, sliding window, token bucket, leaky bucket — applied per IP/user/API key/route, usually returning 429 when exceeded.
+
+---
+
+## Quick revision card
+
+| Question | Short answer |
+| :------- | :----------- |
+| Security in Node | Validate, secrets, HTTPS, Helmet, rate limit, audit deps |
+| libuv | Event loop + async I/O; thread pool for some blocking work |
+| Node architecture | App → Node APIs → V8 → libuv → OS |
+| Aggregation | Pipeline of stages to transform documents |
+| `$lookup` | LEFT JOIN between collections in aggregation |
+| Rate limiting types | Fixed/sliding window, token bucket, leaky bucket (+ IP/user/route scope) |
+
+---
+
+## Interview-ready one-liners
+
+1. **Security:** Never trust input; protect secrets; harden headers; rate-limit; patch deps.
+2. **libuv:** C library behind Node's event loop and async I/O.
+3. **Architecture:** Single-threaded JS + event loop + non-blocking I/O via libuv.
+4. **Aggregation:** Multi-stage pipeline for filtering/grouping/transforming docs.
+5. **`$lookup`:** Aggregation join (LEFT JOIN) that returns matches in an array.
+6. **Rate limiting:** Control request rate with window/bucket algorithms, scoped by IP/user/route.

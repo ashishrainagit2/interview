@@ -90,7 +90,7 @@ console.log(original.user.name); // "Ashis" (unchanged)
 console.log(copied.user.name);   // "Updated"
 
 
-Write a generic function `getArrayItems` in TypeScript that takes an array of any type and returns an array consisting of every other item starting from the first element.
+// Write a generic function `getArrayItems` in TypeScript that takes an array of any type and returns an array consisting of every other item starting from the first element.
 
 function getArrayItems<T>(arr: T[]): T[] {
   return arr.filter((_, index) => index % 2 === 0);
