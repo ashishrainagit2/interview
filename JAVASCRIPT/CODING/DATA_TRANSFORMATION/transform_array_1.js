@@ -13,10 +13,14 @@ const scorecard = [
 ];
 
 const output_expected = [
-  { name: 'Mark', totalScore: '', overallResult: '' },
-  { name: 'Steve', totalScore: '', overallResult: '' },
-  { name: 'Adam', totalScore: '', overallResult: '' },
-];
+  { name: 'Mark', totalScore: 71, overallResult: 'FAIL' },
+  { name: 'Steve', totalScore: 56, overallResult: 'PASS' },
+  { name: 'Vikas', totalScore: 22, overallResult: 'PASS' },
+  { name: 'Adam', totalScore: 48, overallResult: 'FAIL' },
+  { name: 'Amit', totalScore: 26, overallResult: 'FAIL' },
+  { name: 'Ahmed', totalScore: 12, overallResult: 'FAIL' },
+  { name: 'Abdul', totalScore: 2, overallResult: 'FAIL' }
+]
 
   
   const resultDeclare = (arr) => {

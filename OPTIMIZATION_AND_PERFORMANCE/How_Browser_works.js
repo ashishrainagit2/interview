@@ -2,9 +2,39 @@
 // https://web.dev/articles/howbrowserswork
 
 // Video By Semi colon guy
-// https://www.youtube.com/watch?v=Tnp3yX9Z93Q
-// https://www.youtube.com/watch?v=f8-m7zPzjJc
-// https://www.youtube.com/watch?v=XXHtB_z0ehY
+// CRP: Critical Rendering Path: https://www.youtube.com/watch?v=Tnp3yX9Z93Q
+// Improving Rendering Performance: https://www.youtube.com/watch?v=f8-m7zPzjJc
+// More on Performance: https://www.youtube.com/watch?v=XXHtB_z0ehY
+
+
+// CDN, 
+// response-headers{cache-control, content-encoding}
+// minification
+// name-mangling
+// css (media attribute)
+// async and defer
+
+// Resource Hints:
+// dns-prefetch
+// pre-connect
+// preload
+// prefetch
+// prerender
+
+// Improve reflow
+
+// dont change dom frequently, apply changes at last
+// image lazy loading
+
+// CSS:
+// inline critical css
+// use grid or flex
+// reduce complex selectors
+// animation: use potion absolute
+
+// code spliting
+
+
 
 // | # | Technique | One-liner |
 // | :--- | :--- | :--- |

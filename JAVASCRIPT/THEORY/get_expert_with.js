@@ -30,6 +30,7 @@ Object.entries(user).forEach(([key, value]) => {
 });
 
 
+
 // 2. Form fields from a config object
 //    One object = labels + current values. Loop to draw inputs.
 //    Used in settings pages, checkout, admin forms.
@@ -140,3 +141,5 @@ console.log("table headers", columns);
 // Object.keys(obj)    -> need the field names (forms, columns, query keys)
 // Object.values(obj)  -> need the data only (cart total, list of labels)
 // Object.entries(obj) -> need both (render UI rows, errors, options)
+
+//delete  User.name

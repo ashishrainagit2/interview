@@ -8,3 +8,8 @@ Array.prototype.myFilter = function(callback) {
     return result;
 
 }
+
+
+let res = [1,2,3, 4,5, 6, 7, 8].myFilter((item) => {
+   return  item  > 5
+})
