@@ -6,6 +6,8 @@ https://www.youtube.com/watch?v=0YgJLXgZCj4
 
 https://www.youtube.com/watch?v=Oab78wir-k0
 
+https://www.youtube.com/watch?v=Oab78wir-k0 //IMP
+
 QUICK CHECK LIST:
 
  https://www.hostinger.com/in/tutorials/wordpress-seo-checklist

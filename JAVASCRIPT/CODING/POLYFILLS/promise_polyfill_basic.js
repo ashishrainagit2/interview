@@ -6,12 +6,17 @@ function MyPromise(executor) {
   this.value = undefined
   this.onSuccess = null // callback from .then (one only — keep it simple)
 
+  // resolve is the function that is passed to the executor function as on line 25 and it is the function that is used to resolve the promise, its runs after some delay in this case 5000ms
+  // at 5000ms, if by then  this.onSuccess is not null, then it will run the function that is passed to .then
+
   const resolve = (value) => {
+    console.log('resolve value', value.toString())
     if (this.state !== 'pending') return // settle once
     this.state = 'fulfilled'
     this.value = value
     // if someone already called .then, run their callback now
     if (this.onSuccess) {
+      console.log(this.onSuccess.toString())
       this.onSuccess(this.value)
     }
   }
@@ -22,6 +27,18 @@ function MyPromise(executor) {
 }
 
 // You pass one function into MyPromise — that’s executor
+
+// (resolve) => {
+//   console.log(resolve)
+//   setTimeout(() => {
+//    resolve('done')
+//   }, 500)
+// }
+
+// Above arrow function is the executor function that is passed to MyPromise
+// and what it does is run the parameter function that is passed to it at any time, may be after some time or immediately and the resolve is same resolve as it declared at line 9, which internally runs this.onSuccess(this.value) when the state is fulfilled
+
+
 // Inside MyPromise, it runs: executor(resolve)
 // So your (resolve) => { ... } receives the inner resolve function as its argument
 
@@ -40,17 +57,48 @@ MyPromise.prototype.then = function (onSuccess) {
 
 // ---------- use it ----------
 const p = new MyPromise((resolve) => {
-    console.log(resolve)
+    console.log(resolve.toString())
   setTimeout(() => {
     resolve('done')
-  }, 500)
+  }, 5000)
 })
 
-console.log(p)
+
 
 p.then((value) => {
   console.log(value) // "done" after 500ms
 })
+
+// when resolve runs, it instigated function that is passed to .then
+// BUT THERE CAN BE DELAY WHICH IT HANDLES BY SAVING THE FUNCTION TO onSuccess
+
+//lets consider async case only, what happens when then is called?
+// then just stores the function that is passed to it in this.onSuccess
+// as we know onSucess runs after some delay in this case 5000ms
+
+// Two possible cases:
+
+// under 5000s
+// simple when we call then, it just stores the function that is passed to it in this.onSuccess and onSuccess runs after some delay in this case 5000ms
+
+//after 5000s
+// then runs the function that is passed to it in this.onSuccess
+//By 5000 ms the promise is already settled:
+// state = 'fulfilled'
+// value = 'done'
+// onSuccess = null   // .then has not been called yet
+// MyPromise.prototype.then = function (onSuccess) {
+//   if (this.state === 'fulfilled') {
+//     // already done → call immediately
+//     onSuccess(this.value)
+
+//So console.log('done') happens at the moment you call .then, not after another wait.
+
+// When you call .then	                What happens
+// Before resolve -> Callback is saved as onSuccess, and resolve runs it later
+// After resolve
+// Promise is already fulfilled, so .then runs the callback immediately with this.value
+
 
 // So lines 41–43 are only: “when this succeeds, run this function.”
 
@@ -157,3 +205,10 @@ p.then((value) => {
 // Timer fires → resolve('done')
 // resolve → sets fulfilled + value → runs onSuccess('done') → your .then arrow runs
 // Order matters: .then usually registers before the timeout fires, so when resolve runs, the subscriber is already there.
+
+
+// ***********
+
+// p.then(fn)           → p.onSuccess = fn
+// 500 ms later
+// resolve('done')      → p.onSuccess('done')  → console.log('done')
